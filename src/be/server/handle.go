@@ -8,20 +8,19 @@ import (
 func (s *Server) registAPI() {
 	// 初始化静态文件路径
 	initStaticFileMapping(s)
-	// 初始化Portal页面
-	initPortal(s)
+
 	// 初始化ajax接口
 	initAjaxMapping(s)
 }
 
 func initStaticFileMapping(r *Server) {
 	fs := http.FileServer(http.Dir(*option.StaticFilePath))
-	r.GetRouter().PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
-}
+	r.GetRouter().PathPrefix("/js/").Handler(fs)
+	r.GetRouter().PathPrefix("/css/").Handler(fs)
+	r.GetRouter().PathPrefix("/img/").Handler(fs)
+	r.GetRouter().Path("/favicon.ico").Handler(fs)
 
-func initPortal(r *Server) {
-	r.RegistURLMapping("/", "GET", showIndexHtml)
-	r.RegistURLMapping("/login.html", "GET", showLoginHtml)
+	r.GetRouter().Path("/").Handler(fs)
 }
 
 func initAjaxMapping(r *Server) {

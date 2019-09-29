@@ -1,4 +1,4 @@
-.PHONY: all be clean devstack
+.PHONY: all be clean
 
 GOPATH :=
 ifeq ($(OS),Windows_NT)
