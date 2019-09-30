@@ -48,9 +48,14 @@
 
         </el-aside>
 
+        <el-container>
+          <el-main style="height: 100%;">main</el-main>
 
-        <el-main style="height: 100%;">main</el-main>
-
+          <el-footer>
+            <el-divider><span style="color: #909399; font-size: 10px;">{{copyrightContent}}</span></el-divider>
+          </el-footer>
+        </el-container>
+        
       </el-container>
     </el-container>
   </div>
@@ -62,6 +67,12 @@ export default {
     return {
       isCollapse: false,
       asideWidth: "200px"
+    }
+  },
+  computed: {
+    copyrightContent () {
+      var year = (new Date()).getFullYear()
+      return `©2018-${year} 管理平台`
     }
   },
   methods: {
