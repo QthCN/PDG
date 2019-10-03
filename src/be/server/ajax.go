@@ -10,6 +10,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func ajaxLogout(res http.ResponseWriter, req *http.Request) {
+	util.CM.Remove("token", res)
+	http.Redirect(res, req, "/login.html", http.StatusTemporaryRedirect)
+}
+
 func ajaxGenTokenByUMAndPassword(res http.ResponseWriter, req *http.Request) {
 	reqContent, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()

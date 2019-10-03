@@ -69,7 +69,7 @@ func doServe() {
 
 	// http服务
 	srv := &http.Server{
-		Handler:      httpServer.GetRouter(),
+		Handler:      httpServer.GetCORSHandler(),
 		Addr:         *option.HTTPAddress,
 		WriteTimeout: 60 * time.Second,
 		ReadTimeout:  60 * time.Second,

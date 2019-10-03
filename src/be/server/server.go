@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
@@ -27,6 +28,14 @@ func New() *Server {
 
 func (m *Server) GetRouter() *mux.Router {
 	return m.r
+}
+
+func (m *Server) GetCORSHandler() http.Handler {
+	headersOk := handlers.AllowedHeaders([]string{"*"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"*"})
+
+	return handlers.CORS(originsOk, headersOk, methodsOk)(m.r)
 }
 
 func (m *Server) RegistURLMapping(path string, method string, handle func(http.ResponseWriter, *http.Request)) {

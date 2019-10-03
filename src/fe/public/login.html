@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/theme-chalk.css">
+    <title>fe</title>
+
+    <style type="text/css">
+        #box{
+            display: flex;
+            display: -webkit-flex;
+            height: 100%;
+            width: 100%;
+            align-items:center;
+            justify-content:center;
+        }
+    </style>
+  </head>
+
+  <body style="height: 100%; margin: 0px;">
+    
+    <div id="app" style="height: 100%;">
+        <div id="box">
+            <el-form :label-position="'right'" label-width="80px" :model="formData">
+                <el-form-item label="用户名">
+                  <el-input v-model="formData.username"></el-input>
+                </el-form-item>
+                <el-form-item label="密码">
+                  <el-input type="password" v-model="formData.password"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button @click="onSubmit">登陆</el-button>
+                </el-form-item>
+              </el-form>
+        </div>
+    </div>
+
+    <script src="/jquery-3.4.1.min.js"></script>
+    <script src="/vue.js"></script>
+    <script src="/element-ui.js"></script>
+
+    <script>
+        new Vue({
+          el: '#app',
+          data: function() {
+            return { 
+                formData: {
+                    username: '',
+                    password: ''
+                }
+            }
+          },
+          methods: {
+            onSubmit() {
+                var username = this.formData.username
+                var password = this.formData.password
+                $.ajax({
+                    type: "POST",
+                    url: "/v1/ajax/auth/token",
+                    dataType: "JSON",
+                    data: JSON.stringify({
+                        username: username,
+                        password: password
+                    }),
+                    success: function(result) {
+                        window.location.href = "/"
+                    },
+                    error: function() {
+                        alert("登陆失败!")
+                    }
+                })
+            }
+          }
+        })
+    </script>
+    
+    
+  </body>
+  
+</html>

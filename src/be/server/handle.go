@@ -19,13 +19,17 @@ func initStaticFileMapping(r *Server) {
 	r.GetRouter().PathPrefix("/css/").Handler(fs)
 	r.GetRouter().PathPrefix("/img/").Handler(fs)
 	r.GetRouter().Path("/favicon.ico").Handler(fs)
+	r.GetRouter().Path("/login.html").Handler(fs)
 
 	r.GetRouter().Path("/").Handler(fs)
+	r.GetRouter().NotFoundHandler = fs
 }
 
 func initAjaxMapping(r *Server) {
 	// 用户认证密码并生成token
 	r.RegistURLMapping("/v1/ajax/auth/token", "POST", ajaxGenTokenByUMAndPassword)
+	// 登出
+	r.RegistURLMapping("/v1/ajax/auth/logout", "GET", ajaxLogout)
 	// 获取用户信息
 	r.RegistURLMapping("/v1/ajax/auth/info", "GET", ajaxGetUserInfo)
 }

@@ -39,6 +39,10 @@ func (c *cookieMgr) Set(key string, value string, res http.ResponseWriter) {
 }
 
 func (c *cookieMgr) Get(key string, req *http.Request) (string, error) {
+	if *option.Mode == "DEV" {
+		return "ADMIN-DEV-TOKEN", nil
+	}
+
 	if cookie, err := req.Cookie(key); err == nil {
 		value := ""
 		if err = c.s.Decode(key, cookie.Value, &value); err == nil {

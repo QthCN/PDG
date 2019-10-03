@@ -14,8 +14,8 @@
           </div>
 
           <el-submenu index="登陆菜单" style="float: right;">
-            <template slot="title">游客</template>
-            <el-menu-item index="登陆按钮">登陆</el-menu-item>
+            <template slot="title">{{$store.state.currentUser}}</template>
+            <el-menu-item index="注销登陆" @click="logout">注销登陆</el-menu-item>
           </el-submenu>
         </el-menu>
 
@@ -26,15 +26,35 @@
 
         <el-aside :width="asideWidth">
           
-          <el-menu style="height: 100%;" :collapse="isCollapse" :collapse-transition="false">
-            <el-menu-item index="机柜拓扑">
-              <i class="el-icon-location"></i>
-              <span slot="title">机柜拓扑</span>
-            </el-menu-item>
-            <el-menu-item index="资源拓扑">
-              <i class="el-icon-menu"></i>
-              <span slot="title">资源拓扑</span>
-            </el-menu-item>
+          <el-menu style="height: 100%;" :collapse="isCollapse" :collapse-transition="false" :unique-opened="true">
+            <el-submenu index="资源情况">
+              <template slot="title">
+                <i class="el-icon-location"></i>
+                <span slot="title">资源情况</span>
+              </template>
+              <el-menu-item index="物理拓扑">物理拓扑</el-menu-item>
+              <el-menu-item index="资源拓扑">资源拓扑</el-menu-item>
+              <el-menu-item index="资源信息">资源信息</el-menu-item>
+            </el-submenu>
+
+            <el-submenu index="监控数据">
+              <template slot="title">
+                <i class="el-icon-s-order"></i>
+                <span slot="title">监控数据</span>
+              </template>
+              <el-menu-item index="监控大盘">监控大盘</el-menu-item>
+              <el-menu-item index="告警大盘">告警大盘</el-menu-item>
+            </el-submenu>
+
+            <el-submenu index="平台管理">
+              <template slot="title">
+                <i class="el-icon-menu"></i>
+                <span slot="title">平台管理</span>
+              </template>
+              <el-menu-item index="资源管理">资源管理</el-menu-item>
+              <el-menu-item index="监控管理">监控管理</el-menu-item>
+              <el-menu-item index="人员管理">人员管理</el-menu-item>
+            </el-submenu>
 
             <div class="collapse-button" @click="collapse">
               <template v-if="isCollapse">
@@ -83,6 +103,10 @@ export default {
       } else {
         this.asideWidth = "200px"
       }
+    },
+    logout () {
+      this.$store.commit("setCurrentUser", "游客")
+      window.location.href = "/v1/ajax/auth/logout"
     }
   }
 }
