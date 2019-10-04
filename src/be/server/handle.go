@@ -38,4 +38,34 @@ func initAjaxMapping(r *Server) {
 	r.RegistURLMapping("/v1/ajax/auth/user/create", "POST", ajaxCreateUser)
 	// 删除用户
 	r.RegistURLMapping("/v1/ajax/auth/user/remove", "POST", ajaxRemoveUser)
+
+	// DataCenter
+	r.RegistURLMapping("/v1/ajax/device/datacenter/create", "POST", ajaxCreateDataCenter)
+	r.RegistURLMapping("/v1/ajax/device/datacenter/remove", "POST", ajaxDeleteDataCenter)
+	r.RegistURLMapping("/v1/ajax/device/datacenter/list", "GET", ajaxListDataCenters)
+
+	// Rack
+	r.RegistURLMapping("/v1/ajax/device/rack/create", "POST", ajaxCreateRack)
+	r.RegistURLMapping("/v1/ajax/device/rack/remove", "POST", ajaxDeleteRack)
+	r.RegistURLMapping("/v1/ajax/device/rack/list", "GET", ajaxListRacks)
+
+	// ServerDevice
+	r.RegistURLMapping("/v1/ajax/device/server/create", "POST", ajaxCreateServerDevice)
+	r.RegistURLMapping("/v1/ajax/device/server/remove", "POST", ajaxDeleteServerDevice)
+	r.RegistURLMapping("/v1/ajax/device/server/list", "GET", ajaxListServerDevices)
+
+	// NetworkDevice
+	r.RegistURLMapping("/v1/ajax/device/network/create", "POST", ajaxCreateNetworkDevice)
+	r.RegistURLMapping("/v1/ajax/device/network/remove", "POST", ajaxDeleteNetworkDevice)
+	r.RegistURLMapping("/v1/ajax/device/network/list", "GET", ajaxListNetworkDevices)
+
+	// StorageDevice
+	r.RegistURLMapping("/v1/ajax/device/storage/create", "POST", ajaxCreateStorageDevice)
+	r.RegistURLMapping("/v1/ajax/device/storage/remove", "POST", ajaxDeleteStorageDevice)
+	r.RegistURLMapping("/v1/ajax/device/storage/list", "GET", ajaxListStorageDevices)
+
+	// CommonDevice
+	r.RegistURLMapping("/v1/ajax/device/common/create", "POST", ajaxCreateCommonDevice)
+	r.RegistURLMapping("/v1/ajax/device/common/remove", "POST", ajaxDeleteCommonDevice)
+	r.RegistURLMapping("/v1/ajax/device/common/list", "GET", ajaxListCommonDevices)
 }

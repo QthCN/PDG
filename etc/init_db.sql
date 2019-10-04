@@ -16,3 +16,117 @@ CREATE TABLE TOKEN (
     expireTime DATETIME NOT NULL COMMENT '过期时间',
     PRIMARY KEY (token)
 ) ENGINE = INNODB;
+
+CREATE TABLE DATACENTER (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    name VARCHAR(256) NOT NULL COMMENT '机房名称',
+    isDeleted INT NOT NULL DEFAULT 0 COMMENT '是否被删除',
+    PRIMARY KEY (uuid)
+) ENGINE = INNODB;
+
+CREATE TABLE RACK (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    name VARCHAR(256) NOT NULL COMMENT '机柜名称',
+    isDeleted INT NOT NULL DEFAULT 0 COMMENT '是否被删除',
+    PRIMARY KEY (uuid)
+) ENGINE = INNODB;
+
+CREATE TABLE MAPPING_DATACENTER_RACK (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    datacenterId VARCHAR(128) NOT NULL COMMENT '机房ID',
+    rackId VARCHAR(128) NOT NULL COMMENT '机柜ID',
+    PRIMARY KEY (uuid),
+    KEY (datacenterId),
+    KEY (rackId)
+) ENGINE = INNODB;
+
+CREATE TABLE SERVER_DEVICE (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    brand VARCHAR(128) NOT NULL COMMENT '品牌',
+    model VARCHAR(256) NOT NULL COMMENT '型号',
+    diskCapacity INT NOT NULL COMMENT '磁盘容量(TB)',
+    memoryCapacity INT NOT NULL COMMENT '内存容量(GB)',
+    hostname VARCHAR(256) NOT NULL COMMENT '主机名',
+    createTime DATETIME NOT NULL COMMENT '记录创建时间',
+    enableTime DATETIME NOT NULL COMMENT '服务器上架使用时间',
+    expireTime DATETIME NOT NULL COMMENT '服务器过保时间',
+    os VARCHAR(128) NOT NULL COMMENT '操作系统信息',
+    comment VARCHAR(1024) NOT NULL COMMENT '服务器说明信息',
+    isDeleted INT NOT NULL DEFAULT 0 COMMENT '是否被删除',
+    PRIMARY KEY (uuid),
+    UNIQUE KEY (hostname)
+) ENGINE = INNODB;
+
+CREATE TABLE NETWORK_DEVICE (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    brand VARCHAR(128) NOT NULL COMMENT '品牌',
+    model VARCHAR(256) NOT NULL COMMENT '型号',
+    name VARCHAR(128) NOT NULL COMMENT '设备名',
+    createTime DATETIME NOT NULL COMMENT '记录创建时间',
+    enableTime DATETIME NOT NULL COMMENT '服务器上架使用时间',
+    expireTime DATETIME NOT NULL COMMENT '服务器过保时间',
+    comment VARCHAR(1024) NOT NULL COMMENT '说明信息',
+    isDeleted INT NOT NULL DEFAULT 0 COMMENT '是否被删除',
+    PRIMARY KEY (uuid),
+    UNIQUE KEY (name)
+) ENGINE = INNODB;
+
+CREATE TABLE STORAGE_DEVICE (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    brand VARCHAR(128) NOT NULL COMMENT '品牌',
+    model VARCHAR(256) NOT NULL COMMENT '型号',
+    name VARCHAR(128) NOT NULL COMMENT '设备名',
+    createTime DATETIME NOT NULL COMMENT '记录创建时间',
+    enableTime DATETIME NOT NULL COMMENT '服务器上架使用时间',
+    expireTime DATETIME NOT NULL COMMENT '服务器过保时间',
+    comment VARCHAR(1024) NOT NULL COMMENT '说明信息',
+    isDeleted INT NOT NULL DEFAULT 0 COMMENT '是否被删除',
+    PRIMARY KEY (uuid),
+    UNIQUE KEY (name)
+) ENGINE = INNODB;
+
+CREATE TABLE COMMON_DEVICE (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    brand VARCHAR(128) NOT NULL COMMENT '品牌',
+    model VARCHAR(256) NOT NULL COMMENT '型号',
+    name VARCHAR(128) NOT NULL COMMENT '设备名',
+    createTime DATETIME NOT NULL COMMENT '记录创建时间',
+    enableTime DATETIME NOT NULL COMMENT '服务器上架使用时间',
+    expireTime DATETIME NOT NULL COMMENT '服务器过保时间',
+    comment VARCHAR(1024) NOT NULL COMMENT '说明信息',
+    isDeleted INT NOT NULL DEFAULT 0 COMMENT '是否被删除',
+    PRIMARY KEY (uuid),
+    UNIQUE KEY (name)
+) ENGINE = INNODB;
+
+CREATE TABLE MAPPING_RACK_DEVICE (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    rackId VARCHAR(128) NOT NULL COMMENT '机柜ID',
+    deviceId VARCHAR(128) NOT NULL COMMENT '设备ID',
+    deviceType VARCHAR(256) NOT NULL COMMENT '设备类型: [SERVER_DEVICE/STORAGE_DEVICE/NETWORK_DEVICE/COMMON_DEVICE]',
+    begPos INT NOT NULL COMMENT '起始U位置(含)',
+    endPos INT NOT NULL COMMENT '结束U位置(不含)',
+    PRIMARY KEY (uuid),
+    KEY (serverId),
+    KEY (rackId)
+) ENGINE = INNODB;
+
+CREATE TABLE CONNECTION (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    sourceId VARCHAR(128) NOT NULL COMMENT '线缆源头设备ID',
+    sourcePort VARCHAR(128) NOT NULL COMMENT '线缆源头设备端口信息',
+    destinationId VARCHAR(128) NOT NULL COMMENT '线缆目的设备ID',
+    destinationPort VARCHAR(128) NOT NULL COMMENT '线缆目的设备端口信息',
+    PRIMARY KEY (uuid),
+    KEY (sourceId),
+    KEY (destinationId)
+) ENGINE = INNODB;
+
+CREATE TABLE IP (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
+    ipAddress VARCHAR(128) NOT NULL COMMENT 'IP地址',
+    type VARCHAR(256) NOT NULL COMMENT '使用类型: [SERVER_DEVICE/STORAGE_DEVICE/NETWORK_DEVICE/COMMON_DEVICE/RESERVE]',
+    targetId VARCHAR(128) NOT NULL COMMENT '使用方ID',
+    PRIMARY KEY (uuid),
+    UNIQUE KEY (ipAddress)
+) ENGINE = INNODB;

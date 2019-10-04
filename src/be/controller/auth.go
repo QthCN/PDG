@@ -4,10 +4,7 @@ import (
 	"be/dao"
 	"be/option"
 	"be/structs"
-	"fmt"
-
-	uuid "github.com/satori/go.uuid"
-	log "github.com/sirupsen/logrus"
+	"be/util"
 )
 
 type AuthMgr struct {
@@ -29,12 +26,7 @@ func (m *AuthMgr) GenTokenByUsernameAndPassword(username string, password string
 	}
 
 	// 生成token
-	uuid, err := uuid.NewV4()
-	if err != nil {
-		log.Errorln(err.Error())
-		return "", err
-	}
-	token := fmt.Sprintf("%s", uuid)
+	token := util.GetUUID()
 	if err := m.dao.CreateToken(username, token); err != nil {
 		return "", err
 	}

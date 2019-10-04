@@ -44,8 +44,6 @@ import Config from '../../config'
 
 export default {
   name: 'User',
-  props: {
-  },
   data () {
       return {
           users: [],
@@ -86,16 +84,16 @@ export default {
         })
     },
     syncUsers () {
-    var that = this
-    return axios.post(that.config.getAddress("LIST_USERS"))
-                .then(response => {
-                    that.users = response.data
-                })
-                .catch(error => {
-                    console.error(error)
-                    that.users = []
-                    that.$message.error("获取数据异常")
-                })
+        var that = this
+        return axios.post(that.config.getAddress("LIST_USERS"))
+                    .then(response => {
+                        that.users = response.data
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        that.users = []
+                        that.$message.error("获取数据异常")
+                    })
     },
     removeUser(user) {
         var that = this

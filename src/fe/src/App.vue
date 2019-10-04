@@ -53,6 +53,7 @@
               </template>
               <el-menu-item index="/r/manage/d">资源管理</el-menu-item>
               <el-menu-item index="/r/manage/m">监控管理</el-menu-item>
+              <el-menu-item index="/r/manage/i">IP管理</el-menu-item>
               <el-menu-item index="/r/manage/u">人员管理</el-menu-item>
             </el-submenu>
 
