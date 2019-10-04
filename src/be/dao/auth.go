@@ -54,3 +54,65 @@ func (d *AuthDAO) GetUserInfoByToken(token string) (*structs.UserInfo, error) {
 
 	return userInfo, nil
 }
+
+func (d *AuthDAO) ListUsers() ([]*structs.UserInfo, error) {
+	var err error
+	tx := mysql.DB.GetTx()
+	defer func(){
+		if err == nil {
+			tx.Commit()
+		} else {
+			tx.Rollback()
+		}
+	}()
+
+	users := []*structs.UserInfo{}
+
+	sql := `SELECT username FROM USER`
+	
+	stmt, err := tx.Prepare(sql)
+	if err != nil {
+		log.Errorln(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		log.Errorln(err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		user := &structs.UserInfo{}
+		if err = rows.Scan(&user.Username); err != nil {
+			log.Errorln(err.Error())
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (d *AuthDAO) CreateUser(username string, password string) error {
+	w := md5.New()
+	io.WriteString(w, password)
+
+	err := mysql.DB.SimpleExec("INSERT INTO USER(username, epassword) VALUES(?, ?)", username, fmt.Sprintf("%x", w.Sum(nil)))
+	if err != nil {
+		log.Errorln(err.Error())
+		return err
+	}
+	return nil
+}
+
+func (d *AuthDAO) RemoveUser(username string) error {
+	err := mysql.DB.SimpleExec("DELETE FROM USER WHERE username=?", username)
+	if err != nil {
+		log.Errorln(err.Error())
+		return err
+	}
+	return nil
+}

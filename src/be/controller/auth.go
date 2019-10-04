@@ -41,6 +41,7 @@ func (m *AuthMgr) GenTokenByUsernameAndPassword(username string, password string
 
 	return token, nil
 }
+
 func (m *AuthMgr) GetUserInfoByToken(token string) (*structs.UserInfo, error) {
 	if *option.Mode == "DEV" {
 		return &structs.UserInfo{
@@ -48,4 +49,16 @@ func (m *AuthMgr) GetUserInfoByToken(token string) (*structs.UserInfo, error) {
 		}, nil
 	}
 	return m.dao.GetUserInfoByToken(token)
+}
+
+func (m *AuthMgr) ListUsers() ([]*structs.UserInfo, error) {
+	return m.dao.ListUsers()
+}
+
+func (m *AuthMgr) CreateUser(username string, password string) error {
+	return m.dao.CreateUser(username, password)
+}
+
+func (m *AuthMgr) RemoveUser(username string) error {
+	return m.dao.RemoveUser(username)
 }

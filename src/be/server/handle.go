@@ -32,4 +32,10 @@ func initAjaxMapping(r *Server) {
 	r.RegistURLMapping("/v1/ajax/auth/logout", "GET", ajaxLogout)
 	// 获取用户信息
 	r.RegistURLMapping("/v1/ajax/auth/info", "GET", ajaxGetUserInfo)
+	// 列出用户列表
+	r.RegistURLMapping("/v1/ajax/auth/user/list", "GET", ajaxListUsers)
+	// 创建用户
+	r.RegistURLMapping("/v1/ajax/auth/user/create", "POST", ajaxCreateUser)
+	// 删除用户
+	r.RegistURLMapping("/v1/ajax/auth/user/remove", "POST", ajaxRemoveUser)
 }

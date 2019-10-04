@@ -16,6 +16,15 @@ Config.prototype.getAddress = function(target) {
         case "GET_USERNAME":
             url = `${this.baseAddress}/v1/ajax/auth/info`
             break
+        case "LIST_USERS":
+                url = `${this.baseAddress}/v1/ajax/auth/user/list`
+                break
+        case "REMOVE_USER":
+                url = `${this.baseAddress}/v1/ajax/auth/user/remove`
+                break     
+        case "CREATE_USER":
+                url = `${this.baseAddress}/v1/ajax/auth/user/create`
+                break     
         default:
             console.error(`unknown target: ${target}`)
             break

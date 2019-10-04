@@ -8,9 +8,9 @@ export default new Vuex.Store({
     // 当前用户信息
     currentUser: "游客",
     // 当前用户想访问的地址
-    routePath: "",
+    routePath: "/",
     // 页面加载动画开关
-    pageLoading: false,
+    pageLoading: true,
   },
   mutations: {
     // 设置当前用户

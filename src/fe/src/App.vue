@@ -26,15 +26,15 @@
 
         <el-aside :width="asideWidth">
           
-          <el-menu style="height: 100%;" :collapse="isCollapse" :collapse-transition="false" :unique-opened="true">
+          <el-menu :default-active="indexSelected" router @select="changeIndex" style="height: 100%;" :collapse="isCollapse" :collapse-transition="false" :unique-opened="true">
             <el-submenu index="资源情况">
               <template slot="title">
                 <i class="el-icon-location"></i>
                 <span slot="title">资源情况</span>
               </template>
-              <el-menu-item index="物理拓扑">物理拓扑</el-menu-item>
-              <el-menu-item index="资源拓扑">资源拓扑</el-menu-item>
-              <el-menu-item index="资源信息">资源信息</el-menu-item>
+              <el-menu-item index="/r/device/p">物理拓扑</el-menu-item>
+              <el-menu-item index="/r/device/l">资源拓扑</el-menu-item>
+              <el-menu-item index="/r/device/i">资源信息</el-menu-item>
             </el-submenu>
 
             <el-submenu index="监控数据">
@@ -42,8 +42,8 @@
                 <i class="el-icon-s-order"></i>
                 <span slot="title">监控数据</span>
               </template>
-              <el-menu-item index="监控大盘">监控大盘</el-menu-item>
-              <el-menu-item index="告警大盘">告警大盘</el-menu-item>
+              <el-menu-item index="/r/monitor/m">监控大盘</el-menu-item>
+              <el-menu-item index="/r/monitor/a">告警大盘</el-menu-item>
             </el-submenu>
 
             <el-submenu index="平台管理">
@@ -51,9 +51,9 @@
                 <i class="el-icon-menu"></i>
                 <span slot="title">平台管理</span>
               </template>
-              <el-menu-item index="资源管理">资源管理</el-menu-item>
-              <el-menu-item index="监控管理">监控管理</el-menu-item>
-              <el-menu-item index="人员管理">人员管理</el-menu-item>
+              <el-menu-item index="/r/manage/d">资源管理</el-menu-item>
+              <el-menu-item index="/r/manage/m">监控管理</el-menu-item>
+              <el-menu-item index="/r/manage/u">人员管理</el-menu-item>
             </el-submenu>
 
             <div class="collapse-button" @click="collapse">
@@ -69,7 +69,9 @@
         </el-aside>
 
         <el-container>
-          <el-main style="height: 100%;">main</el-main>
+          <el-main style="height: 100%;" v-loading="$store.state.pageLoading">
+            <router-view/>
+          </el-main>
 
           <el-footer>
             <el-divider><span style="color: #909399; font-size: 10px;">{{copyrightContent}}</span></el-divider>
@@ -86,7 +88,8 @@ export default {
   data() {
     return {
       isCollapse: false,
-      asideWidth: "200px"
+      asideWidth: "200px",
+      indexSelected: "/r/device/p",
     }
   },
   computed: {
@@ -95,7 +98,13 @@ export default {
       return `©2018-${year} 管理平台`
     }
   },
+  mounted () {
+    this.indexSelected = this.$store.state.routePath
+  },
   methods: {
+    changeIndex(key, keyPath) {
+      this.indexSelected = key
+    },
     collapse () {
       this.isCollapse = !this.isCollapse
       if (this.isCollapse) {
@@ -122,8 +131,6 @@ body,
 }
 
 .collapse-button {
-  position: absolute;
-  bottom: 5px;
   color: #909399; 
   font-size: 20px; 
   height: 56px; 

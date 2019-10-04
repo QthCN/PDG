@@ -31,9 +31,9 @@ func (m *Server) GetRouter() *mux.Router {
 }
 
 func (m *Server) GetCORSHandler() http.Handler {
-	headersOk := handlers.AllowedHeaders([]string{"*"})
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Auth-Token", "Cache-Control"})
 	originsOk := handlers.AllowedOrigins([]string{"*"})
-	methodsOk := handlers.AllowedMethods([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "HEAD", "OPTIONS", "PUT"})
 
 	return handlers.CORS(originsOk, headersOk, methodsOk)(m.r)
 }

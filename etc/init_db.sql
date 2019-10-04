@@ -8,6 +8,8 @@ CREATE TABLE USER (
     PRIMARY KEY (username)
 ) ENGINE = INNODB;
 
+INSERT INTO USER(username, epassword) values('ADMIN', '21232f297a57a5a743894a0e4a801fc3');
+
 CREATE TABLE TOKEN (
     token VARCHAR(128) NOT NULL COMMENT 'token',
     username VARCHAR(128) NOT NULL COMMENT '用户名',
