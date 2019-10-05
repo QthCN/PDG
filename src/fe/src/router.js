@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import User from './components/manage/User.vue'
 import Device from './components/manage/Device.vue'
+import PhysicalTopology from './components/device/PhysicalTopology.vue'
 
 Vue.use(Router)
 
@@ -18,6 +19,11 @@ export default new Router({
       path: '/r/manage/d',
       name: 'Device',
       component: Device
+    },
+    {
+      path: '/r/device/p',
+      name: 'PhysicalTopology',
+      component: PhysicalTopology
     }
   ]
 })

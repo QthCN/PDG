@@ -35,6 +35,8 @@ CREATE TABLE MAPPING_DATACENTER_RACK (
     uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
     datacenterId VARCHAR(128) NOT NULL COMMENT '机房ID',
     rackId VARCHAR(128) NOT NULL COMMENT '机柜ID',
+    positionX INT NOT NULL COMMENT '机柜位置X坐标',
+    positionZ INT NOT NULL COMMENT '机柜位置Z坐标',
     PRIMARY KEY (uuid),
     KEY (datacenterId),
     KEY (rackId)
@@ -107,7 +109,7 @@ CREATE TABLE MAPPING_RACK_DEVICE (
     begPos INT NOT NULL COMMENT '起始U位置(含)',
     endPos INT NOT NULL COMMENT '结束U位置(不含)',
     PRIMARY KEY (uuid),
-    KEY (serverId),
+    KEY (deviceId),
     KEY (rackId)
 ) ENGINE = INNODB;
 

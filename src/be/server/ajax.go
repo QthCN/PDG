@@ -276,6 +276,87 @@ func ajaxListDataCenters(res http.ResponseWriter, req *http.Request) {
 	ResMsg(res, 200, string(b))
 }
 
+func ajaxMapDeviceAndRack(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		RackId     string `json:"rack_id"`
+		DeviceId   string `json:"device_id"`
+		DeviceType string `json:"device_type"`
+		BegPos     int64  `json:"beg_pos"`
+		EndPos     int64  `json:"end_pos"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Device.MapDeviceAndRack(request.RackId, request.DeviceId, request.DeviceType, request.BegPos, request.EndPos)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+}
+
+func ajaxMapRackAndDatacenter(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		RackId       string `json:"rack_id"`
+		DatacenterId string `json:"datacenter_id"`
+		PositionX    int64  `json:"position_x"`
+		PositionZ    int64  `json:"position_z"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Device.MapRackAndDatacenter(request.RackId, request.DatacenterId, request.PositionZ, request.PositionZ)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+}
+
 func ajaxCreateRack(res http.ResponseWriter, req *http.Request) {
 	token, err := util.CM.Get("token", req)
 	if err != nil || token == "" {

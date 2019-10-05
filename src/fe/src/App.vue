@@ -34,7 +34,6 @@
               </template>
               <el-menu-item index="/r/device/p">物理拓扑</el-menu-item>
               <el-menu-item index="/r/device/l">资源拓扑</el-menu-item>
-              <el-menu-item index="/r/device/i">资源信息</el-menu-item>
             </el-submenu>
 
             <el-submenu index="监控数据">

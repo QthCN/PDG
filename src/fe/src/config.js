@@ -37,6 +37,12 @@ Config.prototype.getAddress = function(target) {
         case "LIST_RACKS":
                 url = `${this.baseAddress}/v1/ajax/device/rack/list`
                 break
+        case "MAPPING_DEVICE_RACK":
+                url = `${this.baseAddress}/v1/ajax/device/map/rack`
+                break
+        case "MAPPING_RACK_DATACENTER":
+                url = `${this.baseAddress}/v1/ajax/device/rack/map/datacenter`
+                break
         case "DELETE_RACK":
                 url = `${this.baseAddress}/v1/ajax/device/rack/remove`
                 break     

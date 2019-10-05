@@ -48,15 +48,44 @@
                     label="机柜名">
                 </el-table-column>
                 <el-table-column
+                    prop="datacenter"
+                    label="机房信息">
+                </el-table-column>
+                <el-table-column
                     fixed="right"
                     label="操作"
-                    width="100">
+                    width="200">
                     <template slot-scope="scope">
+                        <el-button @click="showEditRackDatacenterDialog(scope.row)" type="primary" plain size="small">编辑机房信息</el-button>
                         <el-button @click="removeRack(scope.row)" type="danger" plain size="small">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
 
+            <el-dialog title="编辑机房信息" :visible.sync="editRackDatacenterDialogVisible">
+                <el-form :model="editRackDatacenterForm">
+                    <el-form-item label="机房" :label-width="formLabelWidth">
+                        <el-select v-model="editRackDatacenterForm.datacenterId" placeholder="请选择">
+                            <el-option
+                                v-for="item in datacenters"
+                                :key="item.uuid"
+                                :label="item.name"
+                                :value="item.uuid">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="X坐标" :label-width="formLabelWidth">
+                        <el-input v-model="editRackDatacenterForm.positionX" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Z坐标" :label-width="formLabelWidth">
+                        <el-input v-model="editRackDatacenterForm.positionZ" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="editRackDatacenterDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="editRackDatacenter">确 定</el-button>
+                </div>
+            </el-dialog>
 
             <el-dialog title="新建机柜" :visible.sync="createRackDialogVisible">
                 <el-form :model="createRackForm">
@@ -112,14 +141,19 @@
                     label="操作系统">
                 </el-table-column>
                 <el-table-column
+                    prop="rack"
+                    label="机柜位置">
+                </el-table-column>
+                <el-table-column
                     prop="comment"
                     label="备注">
                 </el-table-column>
                 <el-table-column
                     fixed="right"
                     label="操作"
-                    width="100">
+                    width="200">
                     <template slot-scope="scope">
+                        <el-button @click="showEditDeviceRackDialog(scope.row, 'SERVER_DEVICE')" type="primary" plain size="small">编辑机柜位置</el-button>
                         <el-button @click="removeServerDevice(scope.row)" type="danger" plain size="small">删除</el-button>
                     </template>
                 </el-table-column>
@@ -192,14 +226,19 @@
                     label="过保时间">
                 </el-table-column>
                 <el-table-column
+                    prop="rack"
+                    label="机柜位置">
+                </el-table-column>
+                <el-table-column
                     prop="comment"
                     label="备注">
                 </el-table-column>
                 <el-table-column
                     fixed="right"
                     label="操作"
-                    width="100">
+                    width="200">
                     <template slot-scope="scope">
+                        <el-button @click="showEditDeviceRackDialog(scope.row, 'STORAGE_DEVICE')" type="primary" plain size="small">编辑机柜位置</el-button>
                         <el-button @click="removeStorageDevice(scope.row)" type="danger" plain size="small">删除</el-button>
                     </template>
                 </el-table-column>
@@ -263,14 +302,19 @@
                     label="过保时间">
                 </el-table-column>
                 <el-table-column
+                    prop="rack"
+                    label="机柜位置">
+                </el-table-column>
+                <el-table-column
                     prop="comment"
                     label="备注">
                 </el-table-column>
                 <el-table-column
                     fixed="right"
                     label="操作"
-                    width="100">
+                    width="200">
                     <template slot-scope="scope">
+                        <el-button @click="showEditDeviceRackDialog(scope.row, 'NETWORK_DEVICE')" type="primary" plain size="small">编辑机柜位置</el-button>
                         <el-button @click="removeNetworkDevice(scope.row)" type="danger" plain size="small">删除</el-button>
                     </template>
                 </el-table-column>
@@ -334,14 +378,19 @@
                     label="过保时间">
                 </el-table-column>
                 <el-table-column
+                    prop="rack"
+                    label="机柜位置">
+                </el-table-column>
+                <el-table-column
                     prop="comment"
                     label="备注">
                 </el-table-column>
                 <el-table-column
                     fixed="right"
                     label="操作"
-                    width="100">
+                    width="200">
                     <template slot-scope="scope">
+                        <el-button @click="showEditDeviceRackDialog(scope.row, 'COMMON_DEVICE')" type="primary" plain size="small">编辑机柜位置</el-button>
                         <el-button @click="removeCommonDevice(scope.row)" type="danger" plain size="small">删除</el-button>
                     </template>
                 </el-table-column>
@@ -376,6 +425,31 @@
             </el-dialog>
         </el-tab-pane>
     </el-tabs>
+
+    <el-dialog title="编辑设备位置" :visible.sync="showEditDeviceRackDialogVisible">
+        <el-form :model="editDeviceRackForm">
+            <el-form-item label="机柜" :label-width="formLabelWidth">
+                <el-select v-model="editDeviceRackForm.rackId" placeholder="请选择">
+                    <el-option
+                        v-for="item in racks"
+                        :key="item.uuid"
+                        :label="item.name"
+                        :value="item.uuid">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="起始U位置(含)" :label-width="formLabelWidth">
+                <el-input v-model="editDeviceRackForm.begPos" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="结束U位置(含)" :label-width="formLabelWidth">
+                <el-input v-model="editDeviceRackForm.endPos" autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="showEditDeviceRackDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="editDeviceRack">确 定</el-button>
+        </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -390,6 +464,15 @@ export default {
           config: new Config(),
           formLabelWidth: '120px',
 
+          showEditDeviceRackDialogVisible: false,
+          editDeviceRackUUID: "",
+          editDeviceRackDeviceType: "",
+          editDeviceRackForm: {
+              rackId: "",
+              begPos: 0,
+              endPos: 0,
+          },
+
           createDataCenterDialogVisible: false,
           datacenters: [],
           createDataCenterForm: {
@@ -400,6 +483,13 @@ export default {
           racks: [],
           createRackForm: {
               name: "",
+          },
+          editRackDatacenterDialogVisible: false,
+          editRackUUID: "",
+          editRackDatacenterForm: {
+              datacenterId: "",
+              positionX: 0,
+              positionZ: 0,
           },
 
           createServerDeviceDialogVisible: false,
@@ -462,6 +552,15 @@ export default {
         var that = this
         that.$store.commit("setPageLoading", true)
 
+        that.showEditDeviceRackDialogVisible = false
+        that.editDeviceRackUUID = ""
+        that.editDeviceRackDeviceType = "",
+        that.editDeviceRackForm = {
+              rackId: "",
+              begPos: 0,
+              endPos: 0,
+        }
+
         that.createDataCenterDialogVisible = false
         that.datacenters = []
         that.createDataCenterForm = {
@@ -472,6 +571,13 @@ export default {
         that.racks = []
         that.createRackForm = {
               name: "",
+        }
+        that.editRackDatacenterDialogVisible = false
+        that.editRackUUID = ""
+        that.editRackDatacenterForm = {
+              datacenterId: "",
+              positionX: 0,
+              positionZ: 0,
         }
 
         that.createServerDeviceDialogVisible = false
@@ -536,6 +642,11 @@ export default {
             that.$store.commit("setPageLoading", false)
         })
     },
+    showEditDeviceRackDialog (device, deviceType) {
+        this.editDeviceRackUUID = device.uuid
+        this.editDeviceRackDeviceType = deviceType
+        this.showEditDeviceRackDialogVisible = true
+    },
     syncDataCenters () {
         var that = this
         return axios.post(that.config.getAddress("LIST_DATACENTERS"))
@@ -574,13 +685,45 @@ export default {
         var that = this
         return axios.post(that.config.getAddress("LIST_RACKS"))
                     .then(response => {
-                        that.racks = response.data
+                        var racks = response.data
+                        for (var rack of racks) {
+                            if (rack.position.datacenter_uuid !== "") {
+                                rack.datacenter = `${rack.position.datacenter_name} (${rack.position.position_x}, ${rack.position.position_z})`
+                            }
+                        }
+                        that.racks = racks
                     })
                     .catch(error => {
                         console.error(error)
                         that.racks = []
                         that.$message.error("获取数据异常")
                     })
+    },
+    showEditRackDatacenterDialog (rack) {
+        this.editRackUUID = rack.uuid
+        this.editRackDatacenterDialogVisible = true
+    },
+    editRackDatacenter() {
+        var that = this
+        axios.post(that.config.getAddress("MAPPING_RACK_DATACENTER"), {rack_id: that.editRackUUID, datacenter_id: that.editRackDatacenterForm.datacenterId, position_x: parseInt(that.editRackDatacenterForm.positionX), position_z: parseInt(that.editRackDatacenterForm.positionZ)})
+             .then(response => {
+                 that.initData()
+             })
+             .catch(error => {
+                console.error(error)
+                that.$message.error(error.response.data.msg)
+             })
+    },
+    editDeviceRack () {
+        var that = this
+        axios.post(that.config.getAddress("MAPPING_DEVICE_RACK"), {device_id: that.editDeviceRackUUID, device_type: that.editDeviceRackDeviceType, rack_id: that.editDeviceRackForm.rackId, beg_pos: parseInt(that.editDeviceRackForm.begPos), end_pos: parseInt(that.editDeviceRackForm.endPos)})
+             .then(response => {
+                 that.initData()
+             })
+             .catch(error => {
+                console.error(error)
+                that.$message.error(error.response.data.msg)
+             })
     },
     removeRack (rack) {
         var that = this
@@ -608,7 +751,13 @@ export default {
         var that = this
         return axios.post(that.config.getAddress("LIST_SERVERS"))
                     .then(response => {
-                        that.serverDevices = response.data
+                        var serverDevices = response.data
+                        for (var serverDevice of serverDevices) {
+                            if (serverDevice.position.rack_uuid !== "") {
+                                serverDevice.rack = `${serverDevice.position.rack_name} (${serverDevice.position.beg_pos}U - ${serverDevice.position.end_pos}U)`
+                            }
+                        }
+                        that.serverDevices = serverDevices
                     })
                     .catch(error => {
                         console.error(error)
@@ -652,7 +801,13 @@ export default {
         var that = this
         return axios.post(that.config.getAddress("LIST_STORAGE_DEVICES"))
                     .then(response => {
-                        that.storageDevices = response.data
+                        var storageDevices = response.data
+                        for (var storageDevice of storageDevices) {
+                            if (storageDevice.position.rack_uuid !== "") {
+                                storageDevice.rack = `${storageDevice.position.rack_name} (${storageDevice.position.beg_pos}U - ${storageDevice.position.end_pos}U)`
+                            }
+                        }
+                        that.storageDevices = storageDevices
                     })
                     .catch(error => {
                         console.error(error)
@@ -693,7 +848,13 @@ export default {
         var that = this
         return axios.post(that.config.getAddress("LIST_NETWORK_DEVICES"))
                     .then(response => {
-                        that.networkDevices = response.data
+                        var networkDevices = response.data
+                        for (var networkDevice of networkDevices) {
+                            if (networkDevice.position.rack_uuid !== "") {
+                                networkDevice.rack = `${networkDevice.position.rack_name} (${networkDevice.position.beg_pos}U - ${networkDevice.position.end_pos}U)`
+                            }
+                        }
+                        that.networkDevices = networkDevices
                     })
                     .catch(error => {
                         console.error(error)
@@ -734,7 +895,13 @@ export default {
         var that = this
         return axios.post(that.config.getAddress("LIST_COMMON_DEVICES"))
                     .then(response => {
-                        that.commonDevices = response.data
+                        var commonDevices = response.data
+                        for (var commonDevice of commonDevices) {
+                            if (commonDevice.position.rack_uuid !== "") {
+                                commonDevice.rack = `${commonDevice.position.rack_name} (${commonDevice.position.beg_pos}U - ${commonDevice.position.end_pos}U)`
+                            }
+                        }
+                        that.commonDevices = commonDevices
                     })
                     .catch(error => {
                         console.error(error)

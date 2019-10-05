@@ -33,6 +33,14 @@ func (m *DeviceMgr) CreateRack(name string) error {
 	return m.dao.CreateRack(name)
 }
 
+func (m *DeviceMgr) MapRackAndDatacenter(rackUUID string, datacenterUUID string, positionX int64, positionZ int64) error {
+	return m.dao.MapRackAndDatacenter(rackUUID, datacenterUUID, positionX, positionZ)
+}
+
+func (m *DeviceMgr) MapDeviceAndRack(rackUUID string, deviceUUID string, deviceType string, begPos int64, endPos int64) error {
+	return m.dao.MapDeviceAndRack(rackUUID, deviceUUID, deviceType, begPos, endPos)
+}
+
 func (m *DeviceMgr) DeleteRack(uuid string) error {
 	return m.dao.DeleteRack(uuid)
 }

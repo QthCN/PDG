@@ -48,6 +48,9 @@ func initAjaxMapping(r *Server) {
 	r.RegistURLMapping("/v1/ajax/device/rack/create", "POST", ajaxCreateRack)
 	r.RegistURLMapping("/v1/ajax/device/rack/remove", "POST", ajaxDeleteRack)
 	r.RegistURLMapping("/v1/ajax/device/rack/list", "GET", ajaxListRacks)
+	r.RegistURLMapping("/v1/ajax/device/rack/map/datacenter", "POST", ajaxMapRackAndDatacenter)
+
+	r.RegistURLMapping("/v1/ajax/device/map/rack", "POST", ajaxMapDeviceAndRack)
 
 	// ServerDevice
 	r.RegistURLMapping("/v1/ajax/device/server/create", "POST", ajaxCreateServerDevice)
