@@ -80,9 +80,4 @@ type CommonDevice struct {
 	Position    *DevicePosition `json:"position"`
 }
 
-type IP struct {
-	UUID      string `json:"uuid"`
-	IPAddress string `json:"ip_address"`
-	Type      string `json:"type"`
-	TargetId  string `json:"target_id"`
-}
+

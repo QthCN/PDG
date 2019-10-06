@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import User from './components/manage/User.vue'
 import Device from './components/manage/Device.vue'
 import PhysicalTopology from './components/device/PhysicalTopology.vue'
+import IpAndIpSet from './components/manage/IpAndIpSet.vue'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/r/device/p',
       name: 'PhysicalTopology',
       component: PhysicalTopology
+    },
+    {
+      path: '/r/manage/i',
+      name: 'IpAndIpSet',
+      component: IpAndIpSet
     }
   ]
 })

@@ -203,6 +203,8 @@ func (d *DeviceDAO) ListServerDevices() ([]*structs.ServerDevice, error) {
 				   IFNULL(IP.uuid, "") AS ip_uuid, 
 				   IFNULL(IP.ipAddress, "") AS ip_address, 
 				   IFNULL(IP.type, "") AS ip_type,
+				   IFNULL(IP.role, "") AS ip_role,
+				   IFNULL(IP.ipSetId, "") AS ip_set_id,
 				   IFNULL(RACK.name, "") AS rack_name,
 				   IFNULL(MAPPING_RACK_DEVICE.rackId, "") AS rack_id,
 				   IFNULL(MAPPING_RACK_DEVICE.begPos, 0) AS beg_pos,
@@ -234,7 +236,7 @@ func (d *DeviceDAO) ListServerDevices() ([]*structs.ServerDevice, error) {
 			IPAddresses: []*structs.IP{},
 		}
 		ipAddress := &structs.IP{}
-		if err = rows.Scan(&tmpRecord.UUID, &tmpRecord.Brand, &tmpRecord.Model, &tmpRecord.DiskCapacity, &tmpRecord.MemoryCapacity, &tmpRecord.Hostname, &tmpRecord.CreateTime, &tmpRecord.EnableTime, &tmpRecord.ExpireTime, &tmpRecord.OS, &tmpRecord.Comment, &ipAddress.UUID, &ipAddress.IPAddress, &ipAddress.Type, &tmpRecord.Position.RackName, &tmpRecord.Position.RackUUID, &tmpRecord.Position.BegPos, &tmpRecord.Position.EndPos); err != nil {
+		if err = rows.Scan(&tmpRecord.UUID, &tmpRecord.Brand, &tmpRecord.Model, &tmpRecord.DiskCapacity, &tmpRecord.MemoryCapacity, &tmpRecord.Hostname, &tmpRecord.CreateTime, &tmpRecord.EnableTime, &tmpRecord.ExpireTime, &tmpRecord.OS, &tmpRecord.Comment, &ipAddress.UUID, &ipAddress.IPAddress, &ipAddress.Type, &ipAddress.Role, &ipAddress.IPSetId, &tmpRecord.Position.RackName, &tmpRecord.Position.RackUUID, &tmpRecord.Position.BegPos, &tmpRecord.Position.EndPos); err != nil {
 			log.Errorln(err.Error())
 			return nil, err
 		}
@@ -296,6 +298,8 @@ func (d *DeviceDAO) ListNetworkDevices() ([]*structs.NetworkDevice, error) {
 				   IFNULL(IP.uuid, "") AS ip_uuid, 
 				   IFNULL(IP.ipAddress, "") AS ip_address, 
 				   IFNULL(IP.type, "") AS ip_type,
+				   IFNULL(IP.role, "") AS ip_role,
+				   IFNULL(IP.ipSetId, "") AS ip_set_id,
 				   IFNULL(RACK.name, "") AS rack_name,
 				   IFNULL(MAPPING_RACK_DEVICE.rackId, "") AS rack_id,
 				   IFNULL(MAPPING_RACK_DEVICE.begPos, 0) AS beg_pos,
@@ -327,7 +331,7 @@ func (d *DeviceDAO) ListNetworkDevices() ([]*structs.NetworkDevice, error) {
 			IPAddresses: []*structs.IP{},
 		}
 		ipAddress := &structs.IP{}
-		if err = rows.Scan(&tmpRecord.UUID, &tmpRecord.Brand, &tmpRecord.Model, &tmpRecord.Name, &tmpRecord.CreateTime, &tmpRecord.EnableTime, &tmpRecord.ExpireTime, &tmpRecord.Comment, &ipAddress.UUID, &ipAddress.IPAddress, &ipAddress.Type, &tmpRecord.Position.RackName, &tmpRecord.Position.RackUUID, &tmpRecord.Position.BegPos, &tmpRecord.Position.EndPos); err != nil {
+		if err = rows.Scan(&tmpRecord.UUID, &tmpRecord.Brand, &tmpRecord.Model, &tmpRecord.Name, &tmpRecord.CreateTime, &tmpRecord.EnableTime, &tmpRecord.ExpireTime, &tmpRecord.Comment, &ipAddress.UUID, &ipAddress.IPAddress, &ipAddress.Type, &ipAddress.Role, &ipAddress.IPSetId, &tmpRecord.Position.RackName, &tmpRecord.Position.RackUUID, &tmpRecord.Position.BegPos, &tmpRecord.Position.EndPos); err != nil {
 			log.Errorln(err.Error())
 			return nil, err
 		}
@@ -389,6 +393,8 @@ func (d *DeviceDAO) ListStorageDevices() ([]*structs.StorageDevice, error) {
 				   IFNULL(IP.uuid, "") AS ip_uuid, 
 				   IFNULL(IP.ipAddress, "") AS ip_address, 
 				   IFNULL(IP.type, "") AS ip_type,
+				   IFNULL(IP.role, "") AS ip_role,
+				   IFNULL(IP.ipSetId, "") AS ip_set_id,
 				   IFNULL(RACK.name, "") AS rack_name,
 				   IFNULL(MAPPING_RACK_DEVICE.rackId, "") AS rack_id,
 				   IFNULL(MAPPING_RACK_DEVICE.begPos, 0) AS beg_pos,
@@ -420,7 +426,7 @@ func (d *DeviceDAO) ListStorageDevices() ([]*structs.StorageDevice, error) {
 			IPAddresses: []*structs.IP{},
 		}
 		ipAddress := &structs.IP{}
-		if err = rows.Scan(&tmpRecord.UUID, &tmpRecord.Brand, &tmpRecord.Model, &tmpRecord.Name, &tmpRecord.CreateTime, &tmpRecord.EnableTime, &tmpRecord.ExpireTime, &tmpRecord.Comment, &ipAddress.UUID, &ipAddress.IPAddress, &ipAddress.Type, &tmpRecord.Position.RackName, &tmpRecord.Position.RackUUID, &tmpRecord.Position.BegPos, &tmpRecord.Position.EndPos); err != nil {
+		if err = rows.Scan(&tmpRecord.UUID, &tmpRecord.Brand, &tmpRecord.Model, &tmpRecord.Name, &tmpRecord.CreateTime, &tmpRecord.EnableTime, &tmpRecord.ExpireTime, &tmpRecord.Comment, &ipAddress.UUID, &ipAddress.IPAddress, &ipAddress.Type, &ipAddress.Role, &ipAddress.IPSetId, &tmpRecord.Position.RackName, &tmpRecord.Position.RackUUID, &tmpRecord.Position.BegPos, &tmpRecord.Position.EndPos); err != nil {
 			log.Errorln(err.Error())
 			return nil, err
 		}
@@ -482,6 +488,8 @@ func (d *DeviceDAO) ListCommonDevices() ([]*structs.CommonDevice, error) {
 				   IFNULL(IP.uuid, "") AS ip_uuid, 
 				   IFNULL(IP.ipAddress, "") AS ip_address, 
 				   IFNULL(IP.type, "") AS ip_type,
+				   IFNULL(IP.role, "") AS ip_role,
+				   IFNULL(IP.ipSetId, "") AS ip_set_id,
 				   IFNULL(RACK.name, "") AS rack_name,
 				   IFNULL(MAPPING_RACK_DEVICE.rackId, "") AS rack_id,
 				   IFNULL(MAPPING_RACK_DEVICE.begPos, 0) AS beg_pos,
@@ -513,7 +521,7 @@ func (d *DeviceDAO) ListCommonDevices() ([]*structs.CommonDevice, error) {
 			IPAddresses: []*structs.IP{},
 		}
 		ipAddress := &structs.IP{}
-		if err = rows.Scan(&tmpRecord.UUID, &tmpRecord.Brand, &tmpRecord.Model, &tmpRecord.Name, &tmpRecord.CreateTime, &tmpRecord.EnableTime, &tmpRecord.ExpireTime, &tmpRecord.Comment, &ipAddress.UUID, &ipAddress.IPAddress, &ipAddress.Type, &tmpRecord.Position.RackName, &tmpRecord.Position.RackUUID, &tmpRecord.Position.BegPos, &tmpRecord.Position.EndPos); err != nil {
+		if err = rows.Scan(&tmpRecord.UUID, &tmpRecord.Brand, &tmpRecord.Model, &tmpRecord.Name, &tmpRecord.CreateTime, &tmpRecord.EnableTime, &tmpRecord.ExpireTime, &tmpRecord.Comment, &ipAddress.UUID, &ipAddress.IPAddress, &ipAddress.Type, &ipAddress.Role, &ipAddress.IPSetId, &tmpRecord.Position.RackName, &tmpRecord.Position.RackUUID, &tmpRecord.Position.BegPos, &tmpRecord.Position.EndPos); err != nil {
 			log.Errorln(err.Error())
 			return nil, err
 		}

@@ -85,6 +85,24 @@ Config.prototype.getAddress = function(target) {
         case "CREATE_COMMON_DEVICE":
                 url = `${this.baseAddress}/v1/ajax/device/common/create`
                 break 
+        case "LIST_IPS":
+                url = `${this.baseAddress}/v1/ajax/ip/list`
+                break 
+        case "CREATE_IP":
+                url = `${this.baseAddress}/v1/ajax/ip/create`
+                break 
+        case "DELETE_IP":
+                url = `${this.baseAddress}/v1/ajax/ip/remove`
+                break 
+        case "LIST_IPSETS":
+                url = `${this.baseAddress}/v1/ajax/ipset/list`
+                break 
+        case "CREATE_IPSET":
+                url = `${this.baseAddress}/v1/ajax/ipset/create`
+                break 
+        case "DELETE_IPSET":
+                url = `${this.baseAddress}/v1/ajax/ipset/remove`
+                break 
         default:
             console.error(`unknown target: ${target}`)
             break

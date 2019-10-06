@@ -71,4 +71,14 @@ func initAjaxMapping(r *Server) {
 	r.RegistURLMapping("/v1/ajax/device/common/create", "POST", ajaxCreateCommonDevice)
 	r.RegistURLMapping("/v1/ajax/device/common/remove", "POST", ajaxDeleteCommonDevice)
 	r.RegistURLMapping("/v1/ajax/device/common/list", "GET", ajaxListCommonDevices)
+
+	// IP
+	r.RegistURLMapping("/v1/ajax/ip/create", "POST", ajaxCreateIPRecord)
+	r.RegistURLMapping("/v1/ajax/ip/remove", "POST", ajaxDeleteIPRecord)
+	r.RegistURLMapping("/v1/ajax/ip/list", "GET", ajaxListIPs)
+
+	// IPSet
+	r.RegistURLMapping("/v1/ajax/ipset/create", "POST", ajaxCreateIPSetRecord)
+	r.RegistURLMapping("/v1/ajax/ipset/remove", "POST", ajaxDeleteIPSetRecord)
+	r.RegistURLMapping("/v1/ajax/ipset/list", "GET", ajaxListIPSets)
 }

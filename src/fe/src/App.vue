@@ -27,6 +27,11 @@
         <el-aside :width="asideWidth">
           
           <el-menu :default-active="indexSelected" router @select="changeIndex" style="height: 100%;" :collapse="isCollapse" :collapse-transition="false" :unique-opened="true">
+            <el-menu-item index="/r/dashboard">
+                <i class="el-icon-s-marketing"></i>
+                <span slot="title">平台大盘</span>
+            </el-menu-item>
+
             <el-submenu index="资源情况">
               <template slot="title">
                 <i class="el-icon-location"></i>
@@ -52,7 +57,7 @@
               </template>
               <el-menu-item index="/r/manage/d">资源管理</el-menu-item>
               <el-menu-item index="/r/manage/m">监控管理</el-menu-item>
-              <el-menu-item index="/r/manage/i">IP管理</el-menu-item>
+              <el-menu-item index="/r/manage/i">IP及网段管理</el-menu-item>
               <el-menu-item index="/r/manage/u">人员管理</el-menu-item>
             </el-submenu>
 

@@ -113,6 +113,11 @@
                     label="主机名">
                 </el-table-column>
                 <el-table-column
+                    fixed
+                    prop="ip_info"
+                    label="IP信息">
+                </el-table-column>
+                <el-table-column
                     prop="brand"
                     label="厂商">
                 </el-table-column>
@@ -151,8 +156,9 @@
                 <el-table-column
                     fixed="right"
                     label="操作"
-                    width="200">
+                    width="300">
                     <template slot-scope="scope">
+                        <el-button @click="showEditDeviceIPDialog(scope.row, 'SERVER_DEVICE')" type="primary" plain size="small">编辑IP信息</el-button>
                         <el-button @click="showEditDeviceRackDialog(scope.row, 'SERVER_DEVICE')" type="primary" plain size="small">编辑机柜位置</el-button>
                         <el-button @click="removeServerDevice(scope.row)" type="danger" plain size="small">删除</el-button>
                     </template>
@@ -210,6 +216,11 @@
                     label="设备名">
                 </el-table-column>
                 <el-table-column
+                    fixed
+                    prop="ip_info"
+                    label="IP信息">
+                </el-table-column>
+                <el-table-column
                     prop="brand"
                     label="厂商">
                 </el-table-column>
@@ -236,8 +247,9 @@
                 <el-table-column
                     fixed="right"
                     label="操作"
-                    width="200">
+                    width="300">
                     <template slot-scope="scope">
+                        <el-button @click="showEditDeviceIPDialog(scope.row, 'STORAGE_DEVICE')" type="primary" plain size="small">编辑IP信息</el-button>
                         <el-button @click="showEditDeviceRackDialog(scope.row, 'STORAGE_DEVICE')" type="primary" plain size="small">编辑机柜位置</el-button>
                         <el-button @click="removeStorageDevice(scope.row)" type="danger" plain size="small">删除</el-button>
                     </template>
@@ -286,6 +298,11 @@
                     label="设备名">
                 </el-table-column>
                 <el-table-column
+                    fixed
+                    prop="ip_info"
+                    label="IP信息">
+                </el-table-column>
+                <el-table-column
                     prop="brand"
                     label="厂商">
                 </el-table-column>
@@ -312,8 +329,9 @@
                 <el-table-column
                     fixed="right"
                     label="操作"
-                    width="200">
+                    width="300">
                     <template slot-scope="scope">
+                        <el-button @click="showEditDeviceIPDialog(scope.row, 'NETWORK_DEVICE')" type="primary" plain size="small">编辑IP信息</el-button>
                         <el-button @click="showEditDeviceRackDialog(scope.row, 'NETWORK_DEVICE')" type="primary" plain size="small">编辑机柜位置</el-button>
                         <el-button @click="removeNetworkDevice(scope.row)" type="danger" plain size="small">删除</el-button>
                     </template>
@@ -362,6 +380,11 @@
                     label="设备名">
                 </el-table-column>
                 <el-table-column
+                    fixed
+                    prop="ip_info"
+                    label="IP信息">
+                </el-table-column>
+                <el-table-column
                     prop="brand"
                     label="厂商">
                 </el-table-column>
@@ -388,8 +411,9 @@
                 <el-table-column
                     fixed="right"
                     label="操作"
-                    width="200">
+                    width="300">
                     <template slot-scope="scope">
+                        <el-button @click="showEditDeviceIPDialog(scope.row, 'COMMON_DEVICE')" type="primary" plain size="small">编辑IP信息</el-button>
                         <el-button @click="showEditDeviceRackDialog(scope.row, 'COMMON_DEVICE')" type="primary" plain size="small">编辑机柜位置</el-button>
                         <el-button @click="removeCommonDevice(scope.row)" type="danger" plain size="small">删除</el-button>
                     </template>
@@ -425,6 +449,61 @@
             </el-dialog>
         </el-tab-pane>
     </el-tabs>
+
+    
+    <el-dialog title="编辑IP信息" :visible.sync="showEditDeviceIPDialogVisible">
+        <el-button type="primary" plain size="small" style="float: right; margin-bottom: 5px;" @click="addIPDialogVisible = true">添加IP</el-button>
+        <el-table
+            :data="deviceIPs"
+            border
+            highlight-current-row
+            style="width: 100%">
+            <el-table-column
+                prop="ip_address"
+                label="IP">
+            </el-table-column>
+            <el-table-column
+                prop="role"
+                label="类型">
+            </el-table-column>
+            <el-table-column
+                fixed="right"
+                label="操作"
+                width="100">
+                <template slot-scope="scope">
+                    <el-button @click="removeDeviceIP(scope.row)" type="danger" plain size="small">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-dialog>
+
+    <el-dialog title="新增IP" :visible.sync="addIPDialogVisible">
+        <el-form :model="addIPForm">
+            <el-form-item label="IP" :label-width="formLabelWidth">
+                <el-input v-model="addIPForm.ipAddress" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="类型" :label-width="formLabelWidth">
+                <el-select v-model="addIPForm.ipRole" placeholder="请选择">
+                    <el-option value="业务">业务</el-option>
+                    <el-option value="带外">带外</el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="所属网段" :label-width="formLabelWidth">
+                <el-select v-model="addIPForm.ipSetId" placeholder="请选择">
+                    <el-option
+                        v-for="item in ipSets"
+                        :key="item.uuid"
+                        :label="item.cidr"
+                        :value="item.uuid">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="addIPDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="doAddIP">确 定</el-button>
+        </div>
+    </el-dialog>
 
     <el-dialog title="编辑设备位置" :visible.sync="showEditDeviceRackDialogVisible">
         <el-form :model="editDeviceRackForm">
@@ -463,6 +542,18 @@ export default {
       return {
           config: new Config(),
           formLabelWidth: '120px',
+
+          ipSets: [],
+
+          addIPDialogVisible: false,
+          addIPForm: {
+              ipAddress: "",
+              ipRole: "业务",
+              ipSetId: "",
+          },
+          showEditDeviceIPDialogVisible: false,
+          editDeviceIPUUID: "",
+          editDeviceIPDeviceType: "",
 
           showEditDeviceRackDialogVisible: false,
           editDeviceRackUUID: "",
@@ -540,6 +631,49 @@ export default {
           },
       }
   },
+  computed: {
+      deviceIPs: function() {
+          var ips = []
+          switch (this.editDeviceIPDeviceType) {
+              case "SERVER_DEVICE":
+                  for (var device of this.serverDevices) {
+                      if (device.uuid == this.editDeviceIPUUID) {
+                          ips = device.ips
+                          break
+                      }
+                  }
+                  break;
+              case "NETWORK_DEVICE":
+                  for (var device of this.networkDevices) {
+                      if (device.uuid == this.editDeviceIPUUID) {
+                          ips = device.ips
+                          break
+                      }
+                  }
+                  break;
+              case "STORAGE_DEVICE":
+                  for (var device of this.storageDevices) {
+                      if (device.uuid == this.editDeviceIPUUID) {
+                          ips = device.ips
+                          break
+                      }
+                  }
+                  break;
+              case "COMMON_DEVICE":
+                  for (var device of this.commonDevices) {
+                      if (device.uuid == this.editDeviceIPUUID) {
+                          ips = device.ips
+                          break
+                      }
+                  }
+                  break;
+          
+              default:
+                  break;
+          }
+          return ips
+      }
+  },
   created () {
 
   },
@@ -551,6 +685,18 @@ export default {
     initData () {
         var that = this
         that.$store.commit("setPageLoading", true)
+
+        that.ipSets = []
+
+        that.addIPDialogVisible = false
+        that.showEditDeviceIPDialogVisible = false
+        that.editDeviceIPUUID = ""
+        that.editDeviceIPDeviceType = ""
+        that.addIPForm = {
+              ipAddress: "",
+              ipRole: "业务",
+              ipSetId: "",
+        }
 
         that.showEditDeviceRackDialogVisible = false
         that.editDeviceRackUUID = ""
@@ -628,6 +774,7 @@ export default {
         }
         
         Promise.all([
+            that.syncIPSets(),
             that.syncDataCenters(),
             that.syncRacks(),
             that.syncServerDevices(),
@@ -646,6 +793,45 @@ export default {
         this.editDeviceRackUUID = device.uuid
         this.editDeviceRackDeviceType = deviceType
         this.showEditDeviceRackDialogVisible = true
+    },
+    showEditDeviceIPDialog (device, deviceType) {
+        this.editDeviceIPUUID = device.uuid
+        this.editDeviceIPDeviceType = deviceType
+        this.showEditDeviceIPDialogVisible = true
+    },
+    syncIPSets () {
+        var that = this
+        return axios.post(that.config.getAddress("LIST_IPSETS"))
+                    .then(response => {
+                        that.ipSets = response.data
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        that.ipSets = []
+                        that.$message.error("获取数据异常")
+                    })
+    },
+    removeDeviceIP (ip) {
+        var that = this
+        axios.post(that.config.getAddress("DELETE_IP"), {uuid: ip.uuid})
+             .then(response => {
+                 that.initData()
+             })
+             .catch(error => {
+                console.error(error)
+                that.$message.error(error.response.data.msg)
+             })
+    },
+    doAddIP () {
+        var that = this
+        axios.post(that.config.getAddress("CREATE_IP"), {ip_address: that.addIPForm.ipAddress, ip_type: that.editDeviceIPDeviceType, ip_role: that.addIPForm.ipRole, target_id: that.editDeviceIPUUID, ip_set_id: that.addIPForm.ipSetId})
+             .then(response => {
+                 that.initData()
+             })
+             .catch(error => {
+                console.error(error)
+                that.$message.error(error.response.data.msg)
+             })
     },
     syncDataCenters () {
         var that = this
@@ -756,6 +942,13 @@ export default {
                             if (serverDevice.position.rack_uuid !== "") {
                                 serverDevice.rack = `${serverDevice.position.rack_name} (${serverDevice.position.beg_pos}U - ${serverDevice.position.end_pos}U)`
                             }
+
+                            serverDevice.ip_info_items = []
+                            console.log(JSON.stringify(serverDevice.ips))
+                            for (var ip of serverDevice.ips) {
+                                serverDevice.ip_info_items.push(`${ip.ip_address}(${ip.role})`)
+                            }
+                            serverDevice.ip_info = serverDevice.ip_info_items.join(", ")
                         }
                         that.serverDevices = serverDevices
                     })
@@ -806,6 +999,12 @@ export default {
                             if (storageDevice.position.rack_uuid !== "") {
                                 storageDevice.rack = `${storageDevice.position.rack_name} (${storageDevice.position.beg_pos}U - ${storageDevice.position.end_pos}U)`
                             }
+
+                            storageDevice.ip_info_items = []
+                            for (var ip of storageDevice.ips) {
+                                storageDevice.ip_info_items.push(`${ip.ip_address}(${ip.role})`)
+                            }
+                            storageDevice.ip_info = storageDevice.ip_info_items.join(", ")
                         }
                         that.storageDevices = storageDevices
                     })
@@ -853,6 +1052,12 @@ export default {
                             if (networkDevice.position.rack_uuid !== "") {
                                 networkDevice.rack = `${networkDevice.position.rack_name} (${networkDevice.position.beg_pos}U - ${networkDevice.position.end_pos}U)`
                             }
+
+                            networkDevice.ip_info_items = []
+                            for (var ip of networkDevice.ips) {
+                                networkDevice.ip_info_items.push(`${ip.ip_address}(${ip.role})`)
+                            }
+                            networkDevice.ip_info = networkDevice.ip_info_items.join(", ")
                         }
                         that.networkDevices = networkDevices
                     })
@@ -900,6 +1105,12 @@ export default {
                             if (commonDevice.position.rack_uuid !== "") {
                                 commonDevice.rack = `${commonDevice.position.rack_name} (${commonDevice.position.beg_pos}U - ${commonDevice.position.end_pos}U)`
                             }
+
+                            commonDevice.ip_info_items = []
+                            for (var ip of commonDevice.ips) {
+                                commonDevice.ip_info_items.push(`${ip.ip_address}(${ip.role})`)
+                            }
+                            commonDevice.ip_info = commonDevice.ip_info_items.join(", ")
                         }
                         that.commonDevices = commonDevices
                     })
