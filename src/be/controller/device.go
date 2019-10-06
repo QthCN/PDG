@@ -167,7 +167,7 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 					BegU:   device.Position.BegPos,
 					SizeU:  device.Position.EndPos - device.Position.BegPos,
 					Type:   "SERVER",
-					Status: "GOOD",
+					Status: Monitor.GetDeviceStatus(device.UUID),
 				}
 				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
 			}
@@ -181,7 +181,7 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 					BegU:   device.Position.BegPos,
 					SizeU:  device.Position.EndPos - device.Position.BegPos,
 					Type:   "NETWORK",
-					Status: "GOOD",
+					Status: Monitor.GetDeviceStatus(device.UUID),
 				}
 				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
 			}
@@ -195,7 +195,7 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 					BegU:   device.Position.BegPos,
 					SizeU:  device.Position.EndPos - device.Position.BegPos,
 					Type:   "STORAGE",
-					Status: "GOOD",
+					Status: Monitor.GetDeviceStatus(device.UUID),
 				}
 				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
 			}
@@ -209,7 +209,7 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 					BegU:   device.Position.BegPos,
 					SizeU:  device.Position.EndPos - device.Position.BegPos,
 					Type:   "OTHER",
-					Status: "GOOD",
+					Status: Monitor.GetDeviceStatus(device.UUID),
 				}
 				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
 			}
