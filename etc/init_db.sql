@@ -118,8 +118,12 @@ CREATE TABLE CONNECTION (
     uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
     sourceId VARCHAR(128) NOT NULL COMMENT '线缆源头设备ID',
     sourcePort VARCHAR(128) NOT NULL COMMENT '线缆源头设备端口信息',
+    sourceDeviceType VARCHAR(128) NOT NULL COMMENT '源头设备类型',
+    sourceDeviceName VARCHAR(128) NOT NULL COMMENT '源头设备名称',
     destinationId VARCHAR(128) NOT NULL COMMENT '线缆目的设备ID',
     destinationPort VARCHAR(128) NOT NULL COMMENT '线缆目的设备端口信息',
+    destinationDeviceType VARCHAR(128) NOT NULL COMMENT '目的设备类型',
+    destinationDeviceName VARCHAR(128) NOT NULL COMMENT '目的设备名称',
     PRIMARY KEY (uuid),
     KEY (sourceId),
     KEY (destinationId)
@@ -136,7 +140,7 @@ CREATE TABLE IP (
     UNIQUE KEY (ipAddress)
 ) ENGINE = INNODB;
 
-CREATE TABLE IPSet (
+CREATE TABLE IPSET (
     uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
     cidr VARCHAR(128) NOT NULL COMMENT 'CIDR',
     comment VARCHAR(1024) NOT NULL COMMENT '说明信息',

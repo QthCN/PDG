@@ -2,8 +2,8 @@
   <div style="">
     <canvas id="renderCanvas" touch-action="none" style="width: 100%; height: 100%;"></canvas> 
 
-    <el-dialog title="物理服务器信息" :visible.sync="serverDeviceStatusDialogVisible" width="80%">
-        <ServerDeviceStatus :uuid="serverDeviceUUID"></ServerDeviceStatus>
+    <el-dialog title="设备信息" :visible.sync="serverDeviceStatusDialogVisible" width="80%">
+        <DeviceStatus :uuid="deviceUUID" :device-type="deviceType"></DeviceStatus>
     </el-dialog>
   </div>
 </template>
@@ -19,7 +19,7 @@ import serverfacePicIBM0 from '../../assets/serverface-ibm-0.png'
 import networkfacePicCisco0 from '../../assets/networkface-cisco-0.png'
 import storagefacePicIBM0 from '../../assets/storageface-ibm-0.png'
 
-import ServerDeviceStatus from './ServerDeviceStatus.vue'
+import DeviceStatus from './DeviceStatus.vue'
 
 export default {
   name: 'Datacenter',
@@ -27,14 +27,15 @@ export default {
   data () {
       return {
         serverDeviceStatusDialogVisible: false,
-        serverDeviceUUID: "",
+        deviceUUID: "",
+        deviceType: "",
       }
   },
   created () {
 
   },
   components: {
-      ServerDeviceStatus
+      DeviceStatus
   },
   mounted () {
     var that = this
@@ -43,15 +44,9 @@ export default {
   methods: {
     showServerInfo (evt) {
         var server = evt.source.__server
-        switch (server.type) {
-            case "SERVER":
-                this.serverDeviceStatusDialogVisible = true
-                this.serverDeviceUUID = server.uuid
-                break;
-        
-            default:
-                break;
-        }
+        this.deviceUUID = server.uuid
+        this.deviceType = server.type
+        this.serverDeviceStatusDialogVisible = true
     },
     render () {
         var that = this

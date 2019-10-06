@@ -97,6 +97,178 @@ func (m *DeviceMgr) ListCommonDevices() ([]*structs.CommonDevice, error) {
 	return m.dao.ListCommonDevices()
 }
 
+func (m *DeviceMgr) GetResourceTopology() ([]*structs.ResourceTopology, error) {
+	resources := []*structs.ResourceTopology{}
+
+	// 机房
+	datacenters, err := m.ListDataCenters()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, datacenter := range datacenters {
+		record := &structs.ResourceTopology{
+			UUID:       datacenter.UUID,
+			DeviceType: "DATACENTER",
+			DeviceName: datacenter.Name,
+			Childrens:  []*structs.ResourceTopology{},
+		}
+		resources = append(resources, record)
+	}
+
+	// 机柜
+	racks, err := m.ListRacks()
+	if err != nil {
+		return nil, err
+	}
+	for _, datacenterResource := range resources {
+		for _, rack := range racks {
+			if rack.Position.DataCenterUUID == datacenterResource.UUID {
+				record := &structs.ResourceTopology{
+					UUID:       rack.UUID,
+					DeviceType: "RACK",
+					DeviceName: rack.Name,
+					Childrens:  []*structs.ResourceTopology{},
+				}
+				datacenterResource.Childrens = append(datacenterResource.Childrens, record)
+			}
+		}
+	}
+
+	// 主机
+	servers, err := m.ListServerDevices()
+	if err != nil {
+		return nil, err
+	}
+	for _, device := range servers {
+		for _, datacenterResource := range resources {
+			for _, rackResource := range datacenterResource.Childrens {
+				if device.Position.RackUUID == rackResource.UUID {
+					record := &structs.ResourceTopology{
+						UUID:       device.UUID,
+						DeviceType: "SERVER",
+						DeviceName: device.Hostname,
+						Childrens:  []*structs.ResourceTopology{},
+					}
+					rackResource.Childrens = append(rackResource.Childrens, record)
+				}
+			}
+		}
+	}
+
+	// 存储
+	storages, err := m.ListStorageDevices()
+	if err != nil {
+		return nil, err
+	}
+	for _, device := range storages {
+		for _, datacenterResource := range resources {
+			for _, rackResource := range datacenterResource.Childrens {
+				if device.Position.RackUUID == rackResource.UUID {
+					record := &structs.ResourceTopology{
+						UUID:       device.UUID,
+						DeviceType: "STORAGE",
+						DeviceName: device.Name,
+						Childrens:  []*structs.ResourceTopology{},
+					}
+					rackResource.Childrens = append(rackResource.Childrens, record)
+				}
+			}
+		}
+	}
+
+	// 网络设备
+	networks, err := m.ListNetworkDevices()
+	if err != nil {
+		return nil, err
+	}
+	for _, device := range networks {
+		for _, datacenterResource := range resources {
+			for _, rackResource := range datacenterResource.Childrens {
+				if device.Position.RackUUID == rackResource.UUID {
+					record := &structs.ResourceTopology{
+						UUID:       device.UUID,
+						DeviceType: "NETWORK",
+						DeviceName: device.Name,
+						Childrens:  []*structs.ResourceTopology{},
+					}
+					rackResource.Childrens = append(rackResource.Childrens, record)
+				}
+			}
+		}
+	}
+
+	// 其它设备
+	others, err := m.ListCommonDevices()
+	if err != nil {
+		return nil, err
+	}
+	for _, device := range others {
+		for _, datacenterResource := range resources {
+			for _, rackResource := range datacenterResource.Childrens {
+				if device.Position.RackUUID == rackResource.UUID {
+					record := &structs.ResourceTopology{
+						UUID:       device.UUID,
+						DeviceType: "OTHER",
+						DeviceName: device.Name,
+						Childrens:  []*structs.ResourceTopology{},
+					}
+					rackResource.Childrens = append(rackResource.Childrens, record)
+				}
+			}
+		}
+	}
+
+	// 网络设备的直连设备
+	connections, err := Connection.ListConnections()
+	if err != nil {
+		return nil, err
+	}
+
+	var getConnectionUnderNetworkDevice = func(uuid string) []*structs.Connection {
+		records := []*structs.Connection{}
+		for _, connection := range connections {
+			if connection.SourceId == uuid || connection.DestinationId == uuid {
+				records = append(records, connection)
+			}
+		}
+		return records
+	}
+
+	for _, datacenterResource := range resources {
+		for _, rackResource := range datacenterResource.Childrens {
+			for _, device := range rackResource.Childrens {
+				if device.DeviceType != "NETWORK" {
+					continue
+				}
+				records := getConnectionUnderNetworkDevice(device.UUID)
+				for _, item := range records {
+					if item.SourceId != device.UUID {
+						record := &structs.ResourceTopology{
+							UUID:       item.SourceId,
+							DeviceType: item.SourceDeviceType,
+							DeviceName: item.SourceDeviceName,
+							Childrens:  []*structs.ResourceTopology{},
+						}
+						device.Childrens = append(device.Childrens, record)
+					} else {
+						record := &structs.ResourceTopology{
+							UUID:       item.DestinationId,
+							DeviceType: item.DestinationDeviceType,
+							DeviceName: item.DestinationDeviceName,
+							Childrens:  []*structs.ResourceTopology{},
+						}
+						device.Childrens = append(device.Childrens, record)
+					}
+
+				}
+			}
+		}
+	}
+
+	return resources, nil
+}
+
 func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.PhysicalTopology, error) {
 
 	// 机房

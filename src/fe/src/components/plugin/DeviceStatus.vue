@@ -34,8 +34,8 @@ import Config from '../../config'
 
 
 export default {
-  name: 'ServerDeviceStatus',
-  props: ['uuid'],
+  name: 'DeviceStatus',
+  props: ['uuid', 'deviceType'],
   data () {
       return {
           loading: true,

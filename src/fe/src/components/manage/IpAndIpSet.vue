@@ -16,10 +16,6 @@
                     label="类型">
                 </el-table-column>
                 <el-table-column
-                    prop="ipset_id"
-                    label="所属网段">
-                </el-table-column>
-                <el-table-column
                     fixed="right"
                     label="操作"
                     width="200">

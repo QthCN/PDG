@@ -63,7 +63,6 @@ export default {
         var that = this
         return axios.post(that.config.getAddress("GET_PHYSICAL_TOPOLOGY"), {})
                     .then(response => {
-                        console.log(JSON.stringify(response.data))
                         that.datacenter = response.data
                     })
                     .catch(error => {

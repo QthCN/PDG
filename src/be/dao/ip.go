@@ -24,7 +24,7 @@ func (d *IpDAO) ListIPSets() ([]*structs.IPSet, error) {
 
 	records := []*structs.IPSet{}
 
-	sql := `SELECT IPSet.uuid, IPSet.cidr, IPSet.comment FROM IPSet WHERE IPSet.isDeleted=0 ORDER BY IPSet.cidr`
+	sql := `SELECT IPSET.uuid, IPSET.cidr, IPSET.comment FROM IPSET WHERE IPSET.isDeleted=0 ORDER BY IPSET.cidr`
 	stmt, err := tx.Prepare(sql)
 	if err != nil {
 		log.Errorln(err.Error())
@@ -96,7 +96,7 @@ func (d *IpDAO) ListIPRecords() ([]*structs.IP, error) {
 }
 
 func (d *IpDAO) CreateIPSet(cidr string, comment string) error {
-	err := mysql.DB.SimpleExec("INSERT INTO IPSet(uuid, cidr, comment, isDeleted) VALUES(?, ?, ?, 0)", util.GetUUID(), cidr, comment)
+	err := mysql.DB.SimpleExec("INSERT INTO IPSET(uuid, cidr, comment, isDeleted) VALUES(?, ?, ?, 0)", util.GetUUID(), cidr, comment)
 	if err != nil {
 		log.Errorln(err.Error())
 		return err
@@ -105,7 +105,7 @@ func (d *IpDAO) CreateIPSet(cidr string, comment string) error {
 }
 
 func (d *IpDAO) DeleteIPSet(uuid string) error {
-	err := mysql.DB.SimpleExec("UPDATE IPSet SET isDeleted=1 WHERE uuid=?", uuid)
+	err := mysql.DB.SimpleExec("UPDATE IPSET SET isDeleted=1 WHERE uuid=?", uuid)
 	if err != nil {
 		log.Errorln(err.Error())
 		return err

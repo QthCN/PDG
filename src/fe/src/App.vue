@@ -56,6 +56,7 @@
                 <span slot="title">平台管理</span>
               </template>
               <el-menu-item index="/r/manage/d">资源管理</el-menu-item>
+              <el-menu-item index="/r/manage/l">布线管理</el-menu-item>
               <el-menu-item index="/r/manage/m">监控管理</el-menu-item>
               <el-menu-item index="/r/manage/i">IP及网段管理</el-menu-item>
               <el-menu-item index="/r/manage/u">人员管理</el-menu-item>

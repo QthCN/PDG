@@ -250,6 +250,32 @@ func ajaxDeleteDataCenter(res http.ResponseWriter, req *http.Request) {
 	ResSuccessMsg(res, 200, "操作成功")
 }
 
+func ajaxGetResourceTopology(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	topology, err := controller.Device.GetResourceTopology()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(topology)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+}
+
 func ajaxGetPhysicalTopology(res http.ResponseWriter, req *http.Request) {
 	token, err := util.CM.Get("token", req)
 	if err != nil || token == "" {
@@ -1121,6 +1147,113 @@ func ajaxDeleteIPSetRecord(res http.ResponseWriter, req *http.Request) {
 	}
 
 	err = controller.Ip.DeleteIPSet(request.UUID)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+}
+
+func ajaxListConnections(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	records, err := controller.Connection.ListConnections()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+}
+
+func ajaxCreateConnection(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		SourceId              string `json:"source_id"`
+		SourcePort            string `json:"source_port"`
+		SourceDeviceType      string `json:"source_device_type"`
+		SourceDeviceName      string `json:"source_device_name"`
+		DestinationId         string `json:"destination_id"`
+		DestinationPort       string `json:"destination_port"`
+		DestinationDeviceType string `json:"destination_device_type"`
+		DestinationDeviceName string `json:"destination_device_name"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Connection.CreateConnection(request.SourceId, request.SourcePort, request.SourceDeviceType, request.SourceDeviceName, request.DestinationId, request.DestinationPort, request.DestinationDeviceType, request.DestinationDeviceName)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+}
+
+func ajaxDeleteConnection(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		UUID string `json:"uuid"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Connection.DeleteConnection(request.UUID)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err.Error(),

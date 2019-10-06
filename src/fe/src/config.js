@@ -19,6 +19,9 @@ Config.prototype.getAddress = function(target) {
         case "GET_PHYSICAL_TOPOLOGY":
                 url = `${this.baseAddress}/v1/ajax/device/topology/physical`
                 break
+        case "GET_RESOURCE_TOPOLOGY":
+                url = `${this.baseAddress}/v1/ajax/device/topology/resource`
+                break
         case "LIST_USERS":
                 url = `${this.baseAddress}/v1/ajax/auth/user/list`
                 break
@@ -105,6 +108,15 @@ Config.prototype.getAddress = function(target) {
                 break 
         case "DELETE_IPSET":
                 url = `${this.baseAddress}/v1/ajax/ipset/remove`
+                break 
+        case "LIST_CONNECTIONS":
+                url = `${this.baseAddress}/v1/ajax/connection/list`
+                break 
+        case "CREATE_CONNECTION":
+                url = `${this.baseAddress}/v1/ajax/connection/create`
+                break 
+        case "DELETE_CONNECTION":
+                url = `${this.baseAddress}/v1/ajax/connection/remove`
                 break 
         default:
             console.error(`unknown target: ${target}`)

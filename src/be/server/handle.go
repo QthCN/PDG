@@ -46,6 +46,8 @@ func initAjaxMapping(r *Server) {
 
 	// 列出物理拓扑
 	r.RegistURLMapping("/v1/ajax/device/topology/physical", "GET", ajaxGetPhysicalTopology)
+	// 列出资源拓扑
+	r.RegistURLMapping("/v1/ajax/device/topology/resource", "GET", ajaxGetResourceTopology)
 
 	// Rack
 	r.RegistURLMapping("/v1/ajax/device/rack/create", "POST", ajaxCreateRack)
@@ -84,4 +86,9 @@ func initAjaxMapping(r *Server) {
 	r.RegistURLMapping("/v1/ajax/ipset/create", "POST", ajaxCreateIPSetRecord)
 	r.RegistURLMapping("/v1/ajax/ipset/remove", "POST", ajaxDeleteIPSetRecord)
 	r.RegistURLMapping("/v1/ajax/ipset/list", "GET", ajaxListIPSets)
+
+	// Connection
+	r.RegistURLMapping("/v1/ajax/connection/create", "POST", ajaxCreateConnection)
+	r.RegistURLMapping("/v1/ajax/connection/remove", "POST", ajaxDeleteConnection)
+	r.RegistURLMapping("/v1/ajax/connection/list", "GET", ajaxListConnections)
 }

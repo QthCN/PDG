@@ -26,3 +26,10 @@ type PhysicalTopology struct {
 	Size  *PhysicalTopologySize   `json:"size"`
 	Racks []*PhysicalTopologyRack `json:"racks"`
 }
+
+type ResourceTopology struct {
+	UUID       string              `json:"uuid"`
+	DeviceName string              `json:"label"`
+	DeviceType string              `json:"device_type"`
+	Childrens  []*ResourceTopology `json:"children"`
+}

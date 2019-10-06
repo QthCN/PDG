@@ -572,7 +572,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="所属网段" :label-width="formLabelWidth">
-                <el-select v-model="addIPForm.ipSetId" placeholder="请选择">
+                <el-select filterable v-model="addIPForm.ipSetId" placeholder="请选择">
                     <el-option
                         v-for="item in ipSets"
                         :key="item.uuid"
@@ -591,7 +591,7 @@
     <el-dialog title="编辑设备位置" :visible.sync="showEditDeviceRackDialogVisible">
         <el-form :model="editDeviceRackForm">
             <el-form-item label="机柜" :label-width="formLabelWidth">
-                <el-select v-model="editDeviceRackForm.rackId" placeholder="请选择">
+                <el-select filterable v-model="editDeviceRackForm.rackId" placeholder="请选择">
                     <el-option
                         v-for="item in racks"
                         :key="item.uuid"
