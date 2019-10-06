@@ -67,8 +67,8 @@ func (d *DeviceDAO) ListDataCenters() ([]*structs.DataCenter, error) {
 	return records, nil
 }
 
-func (d *DeviceDAO) CreateRack(name string) error {
-	if err := mysql.DB.SimpleExec("INSERT INTO RACK(uuid, name, isDeleted) VALUES(?, ?, 0)", util.GetUUID(), name); err != nil {
+func (d *DeviceDAO) CreateRack(name string, size int64) error {
+	if err := mysql.DB.SimpleExec("INSERT INTO RACK(uuid, name, size, isDeleted) VALUES(?, ?, ?, 0)", util.GetUUID(), name, size); err != nil {
 		log.Errorln(err.Error())
 		return err
 	}
@@ -126,6 +126,7 @@ func (d *DeviceDAO) ListRacks() ([]*structs.Rack, error) {
 
 	sql := `SELECT RACK.uuid, 
 				   RACK.name, 
+				   RACK.size,
 				   IFNULL(DATACENTER.name, "") AS dc_name,
 				   IFNULL(MAPPING_DATACENTER_RACK.datacenterId, "") AS dc_uuid,
 				   IFNULL(MAPPING_DATACENTER_RACK.positionX, 0) AS position_x,
@@ -150,7 +151,7 @@ func (d *DeviceDAO) ListRacks() ([]*structs.Rack, error) {
 		record := &structs.Rack{
 			Position: &structs.RackPosition{},
 		}
-		if err = rows.Scan(&record.UUID, &record.Name, &record.Position.DataCenterName, &record.Position.DataCenterUUID, &record.Position.PositionX, &record.Position.PositionZ); err != nil {
+		if err = rows.Scan(&record.UUID, &record.Name, &record.SizeU, &record.Position.DataCenterName, &record.Position.DataCenterUUID, &record.Position.PositionX, &record.Position.PositionZ); err != nil {
 			log.Errorln(err.Error())
 			return nil, err
 		}

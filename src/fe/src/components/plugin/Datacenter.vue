@@ -16,6 +16,8 @@ import Config from '../../config'
 
 import rackfacePic from '../../assets/rackface0.png'
 import serverfacePicIBM0 from '../../assets/serverface-ibm-0.png'
+import networkfacePicCisco0 from '../../assets/networkface-cisco-0.png'
+import storagefacePicIBM0 from '../../assets/storageface-ibm-0.png'
 
 import ServerDeviceStatus from './ServerDeviceStatus.vue'
 
@@ -157,6 +159,14 @@ export default {
                 switch (server.type) {
                     case "SREVER":
                         serverTexture = new BABYLON.Texture(serverfacePicIBM0, scene)
+                        break;
+
+                    case "NETWORK":
+                        serverTexture = new BABYLON.Texture(networkfacePicCisco0, scene)
+                        break;
+
+                    case "STORAGE":
+                        serverTexture = new BABYLON.Texture(storagefacePicIBM0, scene)
                         break;
                 
                     default:

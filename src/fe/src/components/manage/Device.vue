@@ -52,6 +52,10 @@
                     label="机房信息">
                 </el-table-column>
                 <el-table-column
+                    prop="size_u"
+                    label="总U数">
+                </el-table-column>
+                <el-table-column
                     fixed="right"
                     label="操作"
                     width="200">
@@ -91,6 +95,9 @@
                 <el-form :model="createRackForm">
                     <el-form-item label="机柜名" :label-width="formLabelWidth">
                         <el-input v-model="createRackForm.name" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="总U数" :label-width="formLabelWidth">
+                        <el-input v-model="createRackForm.size" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -172,7 +179,16 @@
                         <el-input v-model="createServerDeviceForm.hostname" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="厂商" :label-width="formLabelWidth">
-                        <el-input v-model="createServerDeviceForm.brand" autocomplete="off"></el-input>
+                        <el-select v-model="createServerDeviceForm.brand" placeholder="请选择">
+                            <el-option value="IBM">IBM</el-option>
+                            <el-option value="DELL">DELL</el-option>
+                            <el-option value="惠普">惠普</el-option>
+                            <el-option value="华为">华为</el-option>
+                            <el-option value="中兴">中兴</el-option>
+                            <el-option value="联想">联想</el-option>
+                            <el-option value="思科">思科</el-option>
+                            <el-option value="Juniper">Juniper</el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="型号" :label-width="formLabelWidth">
                         <el-input v-model="createServerDeviceForm.model" autocomplete="off"></el-input>
@@ -184,10 +200,20 @@
                         <el-input v-model="createServerDeviceForm.memory_capacity" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="启用时间" :label-width="formLabelWidth">
-                        <el-input v-model="createServerDeviceForm.enable_time" autocomplete="off"></el-input>
+                        <el-date-picker
+                            v-model="createServerDeviceForm.enable_time"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                     <el-form-item label="过保时间" :label-width="formLabelWidth">
-                        <el-input v-model="createServerDeviceForm.expire_time" autocomplete="off"></el-input>
+                        <el-date-picker
+                            v-model="createServerDeviceForm.expire_time"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                     <el-form-item label="操作系统" :label-width="formLabelWidth">
                         <el-input v-model="createServerDeviceForm.os" autocomplete="off"></el-input>
@@ -263,16 +289,35 @@
                         <el-input v-model="createStorageDeviceForm.name" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="厂商" :label-width="formLabelWidth">
-                        <el-input v-model="createStorageDeviceForm.brand" autocomplete="off"></el-input>
+                        <el-select v-model="createStorageDeviceForm.brand" placeholder="请选择">
+                            <el-option value="IBM">IBM</el-option>
+                            <el-option value="DELL">DELL</el-option>
+                            <el-option value="惠普">惠普</el-option>
+                            <el-option value="华为">华为</el-option>
+                            <el-option value="中兴">中兴</el-option>
+                            <el-option value="联想">联想</el-option>
+                            <el-option value="思科">思科</el-option>
+                            <el-option value="Juniper">Juniper</el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="型号" :label-width="formLabelWidth">
                         <el-input v-model="createStorageDeviceForm.model" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="启用时间" :label-width="formLabelWidth">
-                        <el-input v-model="createStorageDeviceForm.enable_time" autocomplete="off"></el-input>
+                        <el-date-picker
+                            v-model="createStorageDeviceForm.enable_time"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                     <el-form-item label="过保时间" :label-width="formLabelWidth">
-                        <el-input v-model="createStorageDeviceForm.expire_time" autocomplete="off"></el-input>
+                        <el-date-picker
+                            v-model="createStorageDeviceForm.expire_time"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                     <el-form-item label="备注" :label-width="formLabelWidth">
                         <el-input v-model="createStorageDeviceForm.comment" autocomplete="off"></el-input>
@@ -345,16 +390,35 @@
                         <el-input v-model="createNetworkDeviceForm.name" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="厂商" :label-width="formLabelWidth">
-                        <el-input v-model="createNetworkDeviceForm.brand" autocomplete="off"></el-input>
+                        <el-select v-model="createNetworkDeviceForm.brand" placeholder="请选择">
+                            <el-option value="IBM">IBM</el-option>
+                            <el-option value="DELL">DELL</el-option>
+                            <el-option value="惠普">惠普</el-option>
+                            <el-option value="华为">华为</el-option>
+                            <el-option value="中兴">中兴</el-option>
+                            <el-option value="联想">联想</el-option>
+                            <el-option value="思科">思科</el-option>
+                            <el-option value="Juniper">Juniper</el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="型号" :label-width="formLabelWidth">
                         <el-input v-model="createNetworkDeviceForm.model" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="启用时间" :label-width="formLabelWidth">
-                        <el-input v-model="createNetworkDeviceForm.enable_time" autocomplete="off"></el-input>
+                        <el-date-picker
+                            v-model="createNetworkDeviceForm.enable_time"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                     <el-form-item label="过保时间" :label-width="formLabelWidth">
-                        <el-input v-model="createNetworkDeviceForm.expire_time" autocomplete="off"></el-input>
+                        <el-date-picker
+                            v-model="createNetworkDeviceForm.expire_time"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                     <el-form-item label="备注" :label-width="formLabelWidth">
                         <el-input v-model="createNetworkDeviceForm.comment" autocomplete="off"></el-input>
@@ -427,16 +491,35 @@
                         <el-input v-model="createCommonDeviceForm.name" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="厂商" :label-width="formLabelWidth">
-                        <el-input v-model="createCommonDeviceForm.brand" autocomplete="off"></el-input>
+                        <el-select v-model="createCommonDeviceForm.brand" placeholder="请选择">
+                            <el-option value="IBM">IBM</el-option>
+                            <el-option value="DELL">DELL</el-option>
+                            <el-option value="惠普">惠普</el-option>
+                            <el-option value="华为">华为</el-option>
+                            <el-option value="中兴">中兴</el-option>
+                            <el-option value="联想">联想</el-option>
+                            <el-option value="思科">思科</el-option>
+                            <el-option value="Juniper">Juniper</el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="型号" :label-width="formLabelWidth">
                         <el-input v-model="createCommonDeviceForm.model" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="启用时间" :label-width="formLabelWidth">
-                        <el-input v-model="createCommonDeviceForm.enable_time" autocomplete="off"></el-input>
+                        <el-date-picker
+                            v-model="createCommonDeviceForm.enable_time"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                     <el-form-item label="过保时间" :label-width="formLabelWidth">
-                        <el-input v-model="createCommonDeviceForm.expire_time" autocomplete="off"></el-input>
+                        <el-date-picker
+                            v-model="createCommonDeviceForm.expire_time"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                     <el-form-item label="备注" :label-width="formLabelWidth">
                         <el-input v-model="createCommonDeviceForm.comment" autocomplete="off"></el-input>
@@ -520,7 +603,7 @@
             <el-form-item label="起始U位置(含)" :label-width="formLabelWidth">
                 <el-input v-model="editDeviceRackForm.begPos" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="结束U位置(含)" :label-width="formLabelWidth">
+            <el-form-item label="结束U位置(不含)" :label-width="formLabelWidth">
                 <el-input v-model="editDeviceRackForm.endPos" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
@@ -574,6 +657,7 @@ export default {
           racks: [],
           createRackForm: {
               name: "",
+              size: 0,
           },
           editRackDatacenterDialogVisible: false,
           editRackUUID: "",
@@ -717,6 +801,7 @@ export default {
         that.racks = []
         that.createRackForm = {
               name: "",
+              size: 0,
         }
         that.editRackDatacenterDialogVisible = false
         that.editRackUUID = ""
@@ -924,7 +1009,7 @@ export default {
     },
     createRack () {
         var that = this
-        axios.post(that.config.getAddress("CREATE_RACK"), {name: that.createRackForm.name})
+        axios.post(that.config.getAddress("CREATE_RACK"), {name: that.createRackForm.name, size: parseInt(that.createRackForm.size)})
              .then(response => {
                  that.initData()
              })
@@ -944,7 +1029,6 @@ export default {
                             }
 
                             serverDevice.ip_info_items = []
-                            console.log(JSON.stringify(serverDevice.ips))
                             for (var ip of serverDevice.ips) {
                                 serverDevice.ip_info_items.push(`${ip.ip_address}(${ip.role})`)
                             }

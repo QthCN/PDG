@@ -44,6 +44,9 @@ func initAjaxMapping(r *Server) {
 	r.RegistURLMapping("/v1/ajax/device/datacenter/remove", "POST", ajaxDeleteDataCenter)
 	r.RegistURLMapping("/v1/ajax/device/datacenter/list", "GET", ajaxListDataCenters)
 
+	// 列出物理拓扑
+	r.RegistURLMapping("/v1/ajax/device/topology/physical", "GET", ajaxGetPhysicalTopology)
+
 	// Rack
 	r.RegistURLMapping("/v1/ajax/device/rack/create", "POST", ajaxCreateRack)
 	r.RegistURLMapping("/v1/ajax/device/rack/remove", "POST", ajaxDeleteRack)

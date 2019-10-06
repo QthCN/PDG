@@ -15,14 +15,15 @@ type RackPosition struct {
 type Rack struct {
 	UUID     string        `json:"uuid"`
 	Name     string        `json:"name"`
+	SizeU    int64         `json:"size_u"`
 	Position *RackPosition `json:"position"`
 }
 
 type DevicePosition struct {
 	RackUUID string `json:"rack_uuid"`
 	RackName string `json:"rack_name"`
-	BegPos   string `json:"beg_pos"`
-	EndPos   string `json:"end_pos"`
+	BegPos   int64  `json:"beg_pos"`
+	EndPos   int64  `json:"end_pos"`
 }
 
 type ServerDevice struct {
@@ -79,5 +80,3 @@ type CommonDevice struct {
 	IPAddresses []*IP           `json:"ips"`
 	Position    *DevicePosition `json:"position"`
 }
-
-

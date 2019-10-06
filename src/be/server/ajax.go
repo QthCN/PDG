@@ -250,6 +250,51 @@ func ajaxDeleteDataCenter(res http.ResponseWriter, req *http.Request) {
 	ResSuccessMsg(res, 200, "操作成功")
 }
 
+func ajaxGetPhysicalTopology(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		UUID string `json:"uuid"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	topology, err := controller.Device.GetPhysicalTopology(request.UUID)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(topology)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+}
+
 func ajaxListDataCenters(res http.ResponseWriter, req *http.Request) {
 	token, err := util.CM.Get("token", req)
 	if err != nil || token == "" {
@@ -346,7 +391,7 @@ func ajaxMapRackAndDatacenter(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = controller.Device.MapRackAndDatacenter(request.RackId, request.DatacenterId, request.PositionZ, request.PositionZ)
+	err = controller.Device.MapRackAndDatacenter(request.RackId, request.DatacenterId, request.PositionX, request.PositionZ)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err.Error(),
@@ -374,6 +419,7 @@ func ajaxCreateRack(res http.ResponseWriter, req *http.Request) {
 
 	type Request struct {
 		Name string `json:"name"`
+		Size int64  `json:"size"`
 	}
 
 	request := &Request{}
@@ -383,7 +429,7 @@ func ajaxCreateRack(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = controller.Device.CreateRack(request.Name)
+	err = controller.Device.CreateRack(request.Name, request.Size)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err.Error(),

@@ -29,8 +29,8 @@ func (m *DeviceMgr) ListDataCenters() ([]*structs.DataCenter, error) {
 	return m.dao.ListDataCenters()
 }
 
-func (m *DeviceMgr) CreateRack(name string) error {
-	return m.dao.CreateRack(name)
+func (m *DeviceMgr) CreateRack(name string, size int64) error {
+	return m.dao.CreateRack(name, size)
 }
 
 func (m *DeviceMgr) MapRackAndDatacenter(rackUUID string, datacenterUUID string, positionX int64, positionZ int64) error {
@@ -95,4 +95,128 @@ func (m *DeviceMgr) DeleteCommonDevice(uuid string) error {
 
 func (m *DeviceMgr) ListCommonDevices() ([]*structs.CommonDevice, error) {
 	return m.dao.ListCommonDevices()
+}
+
+func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.PhysicalTopology, error) {
+
+	// 机房
+	datacenters, err := m.ListDataCenters()
+	if err != nil {
+		return nil, err
+	}
+
+	// 如果入参没有提供机房ID则默认取第一个机房
+	if datacenterUUID == "" {
+		if len(datacenters) > 0 {
+			datacenterUUID = datacenters[0].UUID
+		}
+	}
+
+	// 机柜
+	racks, err := m.ListRacks()
+	if err != nil {
+		return nil, err
+	}
+	// 主机
+	servers, err := m.ListServerDevices()
+	if err != nil {
+		return nil, err
+	}
+	// 存储
+	storages, err := m.ListStorageDevices()
+	if err != nil {
+		return nil, err
+	}
+	// 网络设备
+	networks, err := m.ListNetworkDevices()
+	if err != nil {
+		return nil, err
+	}
+	// 其它设备
+	others, err := m.ListCommonDevices()
+	if err != nil {
+		return nil, err
+	}
+
+	topology := &structs.PhysicalTopology{
+		Size: &structs.PhysicalTopologySize{
+			Height: 150,
+			Width:  150,
+		},
+		Racks: []*structs.PhysicalTopologyRack{},
+	}
+
+	for _, rack := range racks {
+		if rack.Position.DataCenterUUID != datacenterUUID {
+			continue
+		}
+
+		rackRecord := &structs.PhysicalTopologyRack{
+			Name:    rack.Name,
+			X:       rack.Position.PositionX,
+			Z:       rack.Position.PositionZ,
+			U:       rack.SizeU,
+			Servers: []*structs.PhysicalTopologyRackServer{},
+		}
+
+		for _, device := range servers {
+			if device.Position.RackUUID == rack.UUID {
+				serverRecord := &structs.PhysicalTopologyRackServer{
+					UUID:   device.UUID,
+					Name:   device.Hostname,
+					BegU:   device.Position.BegPos,
+					SizeU:  device.Position.EndPos - device.Position.BegPos,
+					Type:   "SERVER",
+					Status: "GOOD",
+				}
+				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
+			}
+		}
+
+		for _, device := range networks {
+			if device.Position.RackUUID == rack.UUID {
+				serverRecord := &structs.PhysicalTopologyRackServer{
+					UUID:   device.UUID,
+					Name:   device.Name,
+					BegU:   device.Position.BegPos,
+					SizeU:  device.Position.EndPos - device.Position.BegPos,
+					Type:   "NETWORK",
+					Status: "GOOD",
+				}
+				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
+			}
+		}
+
+		for _, device := range storages {
+			if device.Position.RackUUID == rack.UUID {
+				serverRecord := &structs.PhysicalTopologyRackServer{
+					UUID:   device.UUID,
+					Name:   device.Name,
+					BegU:   device.Position.BegPos,
+					SizeU:  device.Position.EndPos - device.Position.BegPos,
+					Type:   "STORAGE",
+					Status: "GOOD",
+				}
+				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
+			}
+		}
+
+		for _, device := range others {
+			if device.Position.RackUUID == rack.UUID {
+				serverRecord := &structs.PhysicalTopologyRackServer{
+					UUID:   device.UUID,
+					Name:   device.Name,
+					BegU:   device.Position.BegPos,
+					SizeU:  device.Position.EndPos - device.Position.BegPos,
+					Type:   "OTHER",
+					Status: "GOOD",
+				}
+				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
+			}
+		}
+
+		topology.Racks = append(topology.Racks, rackRecord)
+	}
+
+	return topology, nil
 }

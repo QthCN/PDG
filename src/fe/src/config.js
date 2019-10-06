@@ -16,6 +16,9 @@ Config.prototype.getAddress = function(target) {
         case "GET_USERNAME":
             url = `${this.baseAddress}/v1/ajax/auth/info`
             break
+        case "GET_PHYSICAL_TOPOLOGY":
+                url = `${this.baseAddress}/v1/ajax/device/topology/physical`
+                break
         case "LIST_USERS":
                 url = `${this.baseAddress}/v1/ajax/auth/user/list`
                 break
