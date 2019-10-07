@@ -12,6 +12,8 @@ type PhysicalTopologyRackServer struct {
 	SizeU  int64  `json:"sizeU"`
 	Type   string `json:"type"`
 	Status string `json:"status"`
+	// 当前仅网络设备提供该项目
+	Connections []*PhysicalTopologyRackServer `json:"connections"`
 }
 
 type PhysicalTopologyRack struct {

@@ -309,6 +309,11 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 	if err != nil {
 		return nil, err
 	}
+	// 网络设备的直连设备
+	connections, err := Connection.ListConnections()
+	if err != nil {
+		return nil, err
+	}
 
 	topology := &structs.PhysicalTopology{
 		Size: &structs.PhysicalTopologySize{
@@ -316,6 +321,17 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 			Width:  150,
 		},
 		Racks: []*structs.PhysicalTopologyRack{},
+	}
+
+	var getDeviceByIDFromTopology = func(uuid string) *structs.PhysicalTopologyRackServer {
+		for _, rack := range topology.Racks {
+			for _, device := range rack.Servers {
+				if device.UUID == uuid {
+					return device
+				}
+			}
+		}
+		return nil
 	}
 
 	for _, rack := range racks {
@@ -334,12 +350,13 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 		for _, device := range servers {
 			if device.Position.RackUUID == rack.UUID {
 				serverRecord := &structs.PhysicalTopologyRackServer{
-					UUID:   device.UUID,
-					Name:   device.Hostname,
-					BegU:   device.Position.BegPos,
-					SizeU:  device.Position.EndPos - device.Position.BegPos,
-					Type:   "SERVER",
-					Status: Monitor.GetDeviceStatus(device.UUID),
+					UUID:        device.UUID,
+					Name:        device.Hostname,
+					BegU:        device.Position.BegPos,
+					SizeU:       device.Position.EndPos - device.Position.BegPos,
+					Type:        "SERVER",
+					Status:      Monitor.GetDeviceStatus(device.UUID),
+					Connections: []*structs.PhysicalTopologyRackServer{},
 				}
 				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
 			}
@@ -348,12 +365,13 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 		for _, device := range networks {
 			if device.Position.RackUUID == rack.UUID {
 				serverRecord := &structs.PhysicalTopologyRackServer{
-					UUID:   device.UUID,
-					Name:   device.Name,
-					BegU:   device.Position.BegPos,
-					SizeU:  device.Position.EndPos - device.Position.BegPos,
-					Type:   "NETWORK",
-					Status: Monitor.GetDeviceStatus(device.UUID),
+					UUID:        device.UUID,
+					Name:        device.Name,
+					BegU:        device.Position.BegPos,
+					SizeU:       device.Position.EndPos - device.Position.BegPos,
+					Type:        "NETWORK",
+					Status:      Monitor.GetDeviceStatus(device.UUID),
+					Connections: []*structs.PhysicalTopologyRackServer{},
 				}
 				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
 			}
@@ -362,12 +380,13 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 		for _, device := range storages {
 			if device.Position.RackUUID == rack.UUID {
 				serverRecord := &structs.PhysicalTopologyRackServer{
-					UUID:   device.UUID,
-					Name:   device.Name,
-					BegU:   device.Position.BegPos,
-					SizeU:  device.Position.EndPos - device.Position.BegPos,
-					Type:   "STORAGE",
-					Status: Monitor.GetDeviceStatus(device.UUID),
+					UUID:        device.UUID,
+					Name:        device.Name,
+					BegU:        device.Position.BegPos,
+					SizeU:       device.Position.EndPos - device.Position.BegPos,
+					Type:        "STORAGE",
+					Status:      Monitor.GetDeviceStatus(device.UUID),
+					Connections: []*structs.PhysicalTopologyRackServer{},
 				}
 				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
 			}
@@ -376,18 +395,41 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 		for _, device := range others {
 			if device.Position.RackUUID == rack.UUID {
 				serverRecord := &structs.PhysicalTopologyRackServer{
-					UUID:   device.UUID,
-					Name:   device.Name,
-					BegU:   device.Position.BegPos,
-					SizeU:  device.Position.EndPos - device.Position.BegPos,
-					Type:   "OTHER",
-					Status: Monitor.GetDeviceStatus(device.UUID),
+					UUID:        device.UUID,
+					Name:        device.Name,
+					BegU:        device.Position.BegPos,
+					SizeU:       device.Position.EndPos - device.Position.BegPos,
+					Type:        "OTHER",
+					Status:      Monitor.GetDeviceStatus(device.UUID),
+					Connections: []*structs.PhysicalTopologyRackServer{},
 				}
 				rackRecord.Servers = append(rackRecord.Servers, serverRecord)
 			}
 		}
 
 		topology.Racks = append(topology.Racks, rackRecord)
+	}
+
+	for _, rack := range topology.Racks {
+		for _, device := range rack.Servers {
+			if device.Type != "NETWORK" {
+				continue
+			}
+			// 对于网络设备，获取一下与其连接的设备的信息
+			for _, connection := range connections {
+				if connection.SourceId == device.UUID {
+					connectionDevice := getDeviceByIDFromTopology(connection.DestinationId)
+					if connectionDevice != nil {
+						device.Connections = append(device.Connections, connectionDevice)
+					}
+				} else if connection.DestinationId == device.UUID {
+					connectionDevice := getDeviceByIDFromTopology(connection.SourceId)
+					if connectionDevice != nil {
+						device.Connections = append(device.Connections, connectionDevice)
+					}
+				}
+			}
+		}
 	}
 
 	return topology, nil

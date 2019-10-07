@@ -5,6 +5,10 @@
     <el-dialog title="设备信息" :visible.sync="serverDeviceStatusDialogVisible" width="80%">
         <DeviceStatus :uuid="deviceUUID" :device-type="deviceType"></DeviceStatus>
     </el-dialog>
+
+    <el-dialog title="线路信息" :visible.sync="connectionStatusDialogVisible" width="80%">
+
+    </el-dialog>
   </div>
 </template>
 
@@ -18,6 +22,7 @@ import rackfacePic from '../../assets/rackface0.png'
 import serverfacePicIBM0 from '../../assets/serverface-ibm-0.png'
 import networkfacePicCisco0 from '../../assets/networkface-cisco-0.png'
 import storagefacePicIBM0 from '../../assets/storageface-ibm-0.png'
+import floor0 from '../../assets/floor0.png'
 
 import DeviceStatus from './DeviceStatus.vue'
 
@@ -29,6 +34,8 @@ export default {
         serverDeviceStatusDialogVisible: false,
         deviceUUID: "",
         deviceType: "",
+
+        connectionStatusDialogVisible: false,
       }
   },
   created () {
@@ -47,6 +54,10 @@ export default {
         this.deviceUUID = server.uuid
         this.deviceType = server.type
         this.serverDeviceStatusDialogVisible = true
+    },
+    showConnectionInfo (evt) {
+        var connection = evt.source.__connection
+        this.connectionStatusDialogVisible = true
     },
     render () {
         var that = this
@@ -97,6 +108,12 @@ export default {
 
         // 绘制机房地面
         var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: that.datacenter.size.width, height: that.datacenter.size.height}, scene);
+        var groundMaterial = new BABYLON.StandardMaterial("groundmat", scene);
+        groundMaterial.diffuseTexture = new BABYLON.Texture(floor0, scene);
+        groundMaterial.diffuseTexture.uScale = 10; //you could try changin this and below value to see replicated image 
+        groundMaterial.diffuseTexture.vScale = 10;
+        groundMaterial.diffuseTexture.level = 1; //It is kind of z-index
+        ground.material = groundMaterial;
         
         // 绘制机柜
         for (var rack of that.datacenter.racks) {
@@ -195,6 +212,56 @@ export default {
                         that.showServerInfo
                     )
                 )
+
+                // 网络设备到其它设备的连线
+                for (var connection of server.connections) {
+                    var points = []
+
+                    var z_offset = (connection.begU + connection.sizeU/2 - rack.u/2) / rack.u * 12
+
+                    // 源设备直连点
+                    var pointA_X = rack.x + 5.95
+                    var pointA_Y = serverBox.position.y
+                    var pointA_Z = rack.z + z_offset
+
+                    points.push(new BABYLON.Vector3(pointA_X, pointA_Y, pointA_Z))
+
+                    // 源设备拐点
+                    var pointB_X = pointA_X + 2
+                    var pointB_Y = serverBox.position.y
+                    var pointB_Z = rack.z + z_offset
+
+                    points.push(new BABYLON.Vector3(pointB_X, pointB_Y, pointB_Z))
+
+                    // 目的设备拐点
+                    var pointC_X = pointB_X
+                    var pointC_Y = connection.begU + connection.sizeU/2
+                    var pointC_Z = rack.z + z_offset
+
+                    points.push(new BABYLON.Vector3(pointC_X, pointC_Y, pointC_Z))
+
+                    // 目的设备直连点
+                    var pointD_X = pointC_X - 2
+                    var pointD_Y = connection.begU + connection.sizeU/2
+                    var pointD_Z = rack.z + z_offset
+
+                    points.push(new BABYLON.Vector3(pointD_X, pointD_Y, pointD_Z))
+
+                    var lines = BABYLON.MeshBuilder.CreateLines("lines", {points: points}, scene)
+
+                    lines.__connection = {
+                        source: server,
+                        destionation: connection,
+                    }
+
+                    lines.actionManager = new BABYLON.ActionManager(scene)
+                    lines.actionManager.registerAction(
+                        new BABYLON.ExecuteCodeAction(
+                            BABYLON.ActionManager.OnPickTrigger, 
+                            that.showConnectionInfo
+                        )
+                    ) 
+                }
             }
         }
     }
