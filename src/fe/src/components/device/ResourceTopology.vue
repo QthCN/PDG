@@ -108,7 +108,6 @@ export default {
         var that = this
         return axios.post(that.config.getAddress("GET_RESOURCE_TOPOLOGY"), {})
                     .then(response => {
-                        console.log(JSON.stringify(response.data))
                         that.items = response.data
                     })
                     .catch(error => {

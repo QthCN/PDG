@@ -6,6 +6,9 @@ import Device from './components/manage/Device.vue'
 import PhysicalTopology from './components/device/PhysicalTopology.vue'
 import IpAndIpSet from './components/manage/IpAndIpSet.vue'
 import ResourceTopology from './components/device/ResourceTopology.vue'
+import NetworkTopology from './components/device/NetworkTopology.vue'
+
+
 
 Vue.use(Router)
 
@@ -37,6 +40,11 @@ export default new Router({
       path: '/r/device/l',
       name: 'ResourceTopology',
       component: ResourceTopology
+    },
+    {
+      path: '/r/device/n',
+      name: 'NetworkTopology',
+      component: NetworkTopology
     },
     {
       path: '/r/manage/i',

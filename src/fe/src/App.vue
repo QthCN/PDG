@@ -38,6 +38,7 @@
                 <span slot="title">资源情况</span>
               </template>
               <el-menu-item index="/r/device/p">物理拓扑</el-menu-item>
+              <el-menu-item index="/r/device/n">网络拓扑</el-menu-item>
               <el-menu-item index="/r/device/l">资源拓扑</el-menu-item>
             </el-submenu>
 

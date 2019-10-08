@@ -419,12 +419,12 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 			for _, connection := range connections {
 				if connection.SourceId == device.UUID {
 					connectionDevice := getDeviceByIDFromTopology(connection.DestinationId)
-					if connectionDevice != nil {
+					if connectionDevice != nil && connectionDevice.Type != "NETWORK" {
 						device.Connections = append(device.Connections, connectionDevice)
 					}
 				} else if connection.DestinationId == device.UUID {
 					connectionDevice := getDeviceByIDFromTopology(connection.SourceId)
-					if connectionDevice != nil {
+					if connectionDevice != nil && connectionDevice.Type != "NETWORK" {
 						device.Connections = append(device.Connections, connectionDevice)
 					}
 				}
