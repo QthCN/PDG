@@ -38,6 +38,7 @@ func (m *AuthMgr) GetUserInfoByToken(token string) (*structs.UserInfo, error) {
 	if *option.Mode == "DEV" {
 		return &structs.UserInfo{
 			Username: "ADMIN",
+			Role: "普通用户",
 		}, nil
 	}
 	return m.dao.GetUserInfoByToken(token)
@@ -47,8 +48,8 @@ func (m *AuthMgr) ListUsers() ([]*structs.UserInfo, error) {
 	return m.dao.ListUsers()
 }
 
-func (m *AuthMgr) CreateUser(username string, password string) error {
-	return m.dao.CreateUser(username, password)
+func (m *AuthMgr) CreateUser(username string, password string, role string) error {
+	return m.dao.CreateUser(username, password, role)
 }
 
 func (m *AuthMgr) RemoveUser(username string) error {

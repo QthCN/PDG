@@ -164,7 +164,11 @@ export default {
         ]).then(values => {
             that.$store.commit("setPageLoading", false)
         }).catch(errors => {
-            that.$message.error("页面加载异常")
+            that.$message({
+                type: 'error',
+                message: "页面加载异常",
+                offset: 200,
+            })
             console.error(errors)
             that.$store.commit("setPageLoading", false)
         })
@@ -178,7 +182,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.servers = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     syncStorageDevices () {
@@ -190,7 +198,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.storages = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     syncNetworkDevices () {
@@ -202,7 +214,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.networks = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     syncCommonDevices () {
@@ -214,7 +230,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.others = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     syncConnections () {
@@ -226,7 +246,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.connections = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     removeConnection(connection) {
@@ -237,7 +261,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     getDeviceByUUID(uuid) {
@@ -267,7 +295,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     }
     

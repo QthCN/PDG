@@ -46,7 +46,7 @@ func (d *AuthDAO) CreateToken(username string, token string) error {
 func (d *AuthDAO) GetUserInfoByToken(token string) (*structs.UserInfo, error) {
 	userInfo := &structs.UserInfo{}
 
-	_, err := mysql.DB.SingleRowQuery("SELECT USER.username FROM USER, TOKEN WHERE TOKEN.expireTime>NOW() AND TOKEN.token=? AND TOKEN.username=USER.username", []interface{}{token}, &userInfo.Username)
+	_, err := mysql.DB.SingleRowQuery("SELECT USER.username, USER.role FROM USER, TOKEN WHERE TOKEN.expireTime>NOW() AND TOKEN.token=? AND TOKEN.username=USER.username", []interface{}{token}, &userInfo.Username, &userInfo.Role)
 	if err != nil {
 		log.Errorln(err.Error())
 		return nil, err
@@ -68,7 +68,7 @@ func (d *AuthDAO) ListUsers() ([]*structs.UserInfo, error) {
 
 	users := []*structs.UserInfo{}
 
-	sql := `SELECT username FROM USER`
+	sql := `SELECT username, role FROM USER`
 	
 	stmt, err := tx.Prepare(sql)
 	if err != nil {
@@ -86,7 +86,7 @@ func (d *AuthDAO) ListUsers() ([]*structs.UserInfo, error) {
 
 	for rows.Next() {
 		user := &structs.UserInfo{}
-		if err = rows.Scan(&user.Username); err != nil {
+		if err = rows.Scan(&user.Username, &user.Role); err != nil {
 			log.Errorln(err.Error())
 			return nil, err
 		}
@@ -96,11 +96,11 @@ func (d *AuthDAO) ListUsers() ([]*structs.UserInfo, error) {
 	return users, nil
 }
 
-func (d *AuthDAO) CreateUser(username string, password string) error {
+func (d *AuthDAO) CreateUser(username string, password string, role string) error {
 	w := md5.New()
 	io.WriteString(w, password)
 
-	err := mysql.DB.SimpleExec("INSERT INTO USER(username, epassword) VALUES(?, ?)", username, fmt.Sprintf("%x", w.Sum(nil)))
+	err := mysql.DB.SimpleExec("INSERT INTO USER(username, epassword, role) VALUES(?, ?, ?)", username, fmt.Sprintf("%x", w.Sum(nil)), role)
 	if err != nil {
 		log.Errorln(err.Error())
 		return err

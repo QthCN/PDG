@@ -8,7 +8,9 @@ CREATE TABLE USER (
     PRIMARY KEY (username)
 ) ENGINE = INNODB;
 
-INSERT INTO USER(username, epassword) values('ADMIN', '21232f297a57a5a743894a0e4a801fc3');
+ALTER TABLE USER ADD COLUMN role VARCHAR(256) DEFAULT '管理员' NOT NULL COMMENT '角色';
+
+INSERT INTO USER(username, epassword, role) values('ADMIN', '21232f297a57a5a743894a0e4a801fc3', '管理员');
 
 CREATE TABLE TOKEN (
     token VARCHAR(128) NOT NULL COMMENT 'token',
@@ -146,4 +148,16 @@ CREATE TABLE IPSET (
     comment VARCHAR(1024) NOT NULL COMMENT '说明信息',
     isDeleted INT NOT NULL DEFAULT 0 COMMENT '是否被删除',
     PRIMARY KEY (uuid)
+) ENGINE = INNODB;
+
+CREATE TABLE AUDIT (
+    id INT NOT NULL AUTO_INCREMENT COMMENT '唯一ID',
+    username VARCHAR(128) NOT NULL COMMENT '用户名',
+    action VARCHAR(256) NOT NULL COMMENT '动作',
+    url VARCHAR(1024) NOT NULL COMMENT '请求地址',
+    args TEXT NOT NULL COMMENT '请求参数',
+    actionTime DATETIME NOT NULL COMMENT '动作时间',
+    PRIMARY KEY (id),
+    KEY (username),
+    KEY (actionTime)
 ) ENGINE = INNODB;

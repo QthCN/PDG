@@ -61,6 +61,7 @@
               <el-menu-item index="/r/manage/m">监控管理</el-menu-item>
               <el-menu-item index="/r/manage/i">IP及网段管理</el-menu-item>
               <el-menu-item index="/r/manage/u">人员管理</el-menu-item>
+              <el-menu-item index="/r/manage/a">操作审计</el-menu-item>
             </el-submenu>
 
             <div class="collapse-button" @click="collapse">

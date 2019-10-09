@@ -118,6 +118,9 @@ Config.prototype.getAddress = function(target) {
         case "DELETE_CONNECTION":
                 url = `${this.baseAddress}/v1/ajax/connection/remove`
                 break 
+        case "LIST_AUDIT_RECORDS":
+                url = `${this.baseAddress}/v1/ajax/audit/list`
+                break 
         default:
             console.error(`unknown target: ${target}`)
             break

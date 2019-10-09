@@ -91,4 +91,7 @@ func initAjaxMapping(r *Server) {
 	r.RegistURLMapping("/v1/ajax/connection/create", "POST", ajaxCreateConnection)
 	r.RegistURLMapping("/v1/ajax/connection/remove", "POST", ajaxDeleteConnection)
 	r.RegistURLMapping("/v1/ajax/connection/list", "GET", ajaxListConnections)
+
+	// 查看审计记录
+	r.RegistURLMapping("/v1/ajax/audit/list", "GET", ajaxListAuditRecords)
 }

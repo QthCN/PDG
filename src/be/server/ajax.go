@@ -2,13 +2,36 @@ package server
 
 import (
 	"be/controller"
+	"be/structs"
 	"be/util"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
 )
+
+func isAdmin(token string) bool {
+	userInfo, err := controller.Auth.GetUserInfoByToken(token)
+	if err != nil {
+		log.Errorln(err.Error())
+		return false
+	}
+	if userInfo.Role == "管理员" {
+		return true
+	}
+	return false
+}
+
+func audit(token string, action string, url string, args string) {
+	userInfo, err := controller.Auth.GetUserInfoByToken(token)
+	if err != nil {
+		log.Errorln(err.Error())
+	} else {
+		controller.Audit.CreateRecord(userInfo.Username, action, url, args)
+	}
+}
 
 func ajaxLogout(res http.ResponseWriter, req *http.Request) {
 	util.CM.Remove("token", res)
@@ -44,6 +67,9 @@ func ajaxGenTokenByUMAndPassword(res http.ResponseWriter, req *http.Request) {
 		ResMsg(res, 400, err.Error())
 		return
 	}
+
+	// audit
+	audit(token, "登陆认证", "", fmt.Sprintf("用户名: %s", request.Username))
 
 	// 在session中记录token
 	util.CM.Set("token", token, res)
@@ -99,6 +125,9 @@ func ajaxListUsers(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "列出用户列表", "", "")
 }
 
 func ajaxCreateUser(res http.ResponseWriter, req *http.Request) {
@@ -106,6 +135,11 @@ func ajaxCreateUser(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -119,6 +153,7 @@ func ajaxCreateUser(res http.ResponseWriter, req *http.Request) {
 	type Request struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
+		Role     string `json:"role"`
 	}
 
 	request := &Request{}
@@ -128,7 +163,10 @@ func ajaxCreateUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = controller.Auth.CreateUser(request.Username, request.Password)
+	// audit
+	audit(token, "新建用户", "", fmt.Sprintf("用户名: %s", request.Username))
+
+	err = controller.Auth.CreateUser(request.Username, request.Password, request.Role)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err.Error(),
@@ -144,6 +182,11 @@ func ajaxRemoveUser(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -174,6 +217,9 @@ func ajaxRemoveUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除用户", "", fmt.Sprintf("被删除用户名: %s", request.Username))
 }
 
 func ajaxCreateDataCenter(res http.ResponseWriter, req *http.Request) {
@@ -181,6 +227,11 @@ func ajaxCreateDataCenter(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -211,6 +262,9 @@ func ajaxCreateDataCenter(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "新建机房", "", fmt.Sprintf("机房名: %s", request.Name))
 }
 
 func ajaxDeleteDataCenter(res http.ResponseWriter, req *http.Request) {
@@ -218,6 +272,11 @@ func ajaxDeleteDataCenter(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -248,6 +307,9 @@ func ajaxDeleteDataCenter(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除机房", "", fmt.Sprintf("机房ID: %s", request.UUID))
 }
 
 func ajaxGetResourceTopology(res http.ResponseWriter, req *http.Request) {
@@ -274,6 +336,9 @@ func ajaxGetResourceTopology(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看资源拓扑", "", "")
 }
 
 func ajaxGetPhysicalTopology(res http.ResponseWriter, req *http.Request) {
@@ -319,6 +384,9 @@ func ajaxGetPhysicalTopology(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看物理拓扑", "", "")
 }
 
 func ajaxListDataCenters(res http.ResponseWriter, req *http.Request) {
@@ -345,6 +413,9 @@ func ajaxListDataCenters(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看数据中心列表", "", "")
 }
 
 func ajaxMapDeviceAndRack(res http.ResponseWriter, req *http.Request) {
@@ -352,6 +423,11 @@ func ajaxMapDeviceAndRack(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -386,6 +462,9 @@ func ajaxMapDeviceAndRack(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "关联设备和机柜", "", fmt.Sprintf("机柜ID %s, 设备ID %s", request.RackId, request.DeviceId))
 }
 
 func ajaxMapRackAndDatacenter(res http.ResponseWriter, req *http.Request) {
@@ -393,6 +472,11 @@ func ajaxMapRackAndDatacenter(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -426,6 +510,9 @@ func ajaxMapRackAndDatacenter(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "关联机房机柜", "", fmt.Sprintf("机柜ID %s, 机房ID %s", request.RackId, request.DatacenterId))
 }
 
 func ajaxCreateRack(res http.ResponseWriter, req *http.Request) {
@@ -433,6 +520,11 @@ func ajaxCreateRack(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -464,6 +556,9 @@ func ajaxCreateRack(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "创建机柜", "", fmt.Sprintf("机柜名: %s", request.Name))
 }
 
 func ajaxDeleteRack(res http.ResponseWriter, req *http.Request) {
@@ -471,6 +566,11 @@ func ajaxDeleteRack(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -501,6 +601,9 @@ func ajaxDeleteRack(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除机柜", "", fmt.Sprintf("机柜ID: %s", request.UUID))
 }
 
 func ajaxListRacks(res http.ResponseWriter, req *http.Request) {
@@ -527,6 +630,9 @@ func ajaxListRacks(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看机柜列表", "", "")
 }
 
 func ajaxCreateServerDevice(res http.ResponseWriter, req *http.Request) {
@@ -534,6 +640,11 @@ func ajaxCreateServerDevice(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -572,6 +683,9 @@ func ajaxCreateServerDevice(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "新建物理服务器", "", fmt.Sprintf("服务器名: %s", request.Hostname))
 }
 
 func ajaxDeleteServerDevice(res http.ResponseWriter, req *http.Request) {
@@ -579,6 +693,11 @@ func ajaxDeleteServerDevice(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -609,6 +728,9 @@ func ajaxDeleteServerDevice(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除物理服务器", "", fmt.Sprintf("服务器ID: %s", request.UUID))
 }
 
 func ajaxListServerDevices(res http.ResponseWriter, req *http.Request) {
@@ -635,6 +757,9 @@ func ajaxListServerDevices(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看物理服务器列表", "", "")
 }
 
 func ajaxCreateNetworkDevice(res http.ResponseWriter, req *http.Request) {
@@ -642,6 +767,11 @@ func ajaxCreateNetworkDevice(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -677,6 +807,9 @@ func ajaxCreateNetworkDevice(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "创建网络设备", "", fmt.Sprintf("网络设备名: %s", request.Name))
 }
 
 func ajaxDeleteNetworkDevice(res http.ResponseWriter, req *http.Request) {
@@ -684,6 +817,11 @@ func ajaxDeleteNetworkDevice(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -714,6 +852,9 @@ func ajaxDeleteNetworkDevice(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除网络设备", "", fmt.Sprintf("网络设备ID: %s", request.UUID))
 }
 
 func ajaxListNetworkDevices(res http.ResponseWriter, req *http.Request) {
@@ -740,6 +881,9 @@ func ajaxListNetworkDevices(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看网络设备列表", "", "")
 }
 
 func ajaxCreateStorageDevice(res http.ResponseWriter, req *http.Request) {
@@ -747,6 +891,11 @@ func ajaxCreateStorageDevice(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -782,6 +931,9 @@ func ajaxCreateStorageDevice(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "创建存储设备", "", fmt.Sprintf("存储设备名: %s", request.Name))
 }
 
 func ajaxDeleteStorageDevice(res http.ResponseWriter, req *http.Request) {
@@ -789,6 +941,11 @@ func ajaxDeleteStorageDevice(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -819,6 +976,9 @@ func ajaxDeleteStorageDevice(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除存储设备", "", fmt.Sprintf("存储设备ID: %s", request.UUID))
 }
 
 func ajaxListStorageDevices(res http.ResponseWriter, req *http.Request) {
@@ -845,6 +1005,9 @@ func ajaxListStorageDevices(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看存储设备列表", "", "")
 }
 
 func ajaxCreateCommonDevice(res http.ResponseWriter, req *http.Request) {
@@ -852,6 +1015,11 @@ func ajaxCreateCommonDevice(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -887,6 +1055,9 @@ func ajaxCreateCommonDevice(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "创建其它设备", "", fmt.Sprintf("设备名: %s", request.Name))
 }
 
 func ajaxDeleteCommonDevice(res http.ResponseWriter, req *http.Request) {
@@ -894,6 +1065,11 @@ func ajaxDeleteCommonDevice(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -924,6 +1100,9 @@ func ajaxDeleteCommonDevice(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除其它设备", "", fmt.Sprintf("设备ID: %s", request.UUID))
 }
 
 func ajaxListCommonDevices(res http.ResponseWriter, req *http.Request) {
@@ -950,6 +1129,9 @@ func ajaxListCommonDevices(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看其它设备列表", "", "")
 }
 
 func ajaxListIPs(res http.ResponseWriter, req *http.Request) {
@@ -976,6 +1158,9 @@ func ajaxListIPs(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "创建IP列表", "", "")
 }
 
 func ajaxCreateIPRecord(res http.ResponseWriter, req *http.Request) {
@@ -983,6 +1168,11 @@ func ajaxCreateIPRecord(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1017,6 +1207,9 @@ func ajaxCreateIPRecord(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "新增IP记录", "", fmt.Sprintf("IP: %s", request.IPAddress))
 }
 
 func ajaxDeleteIPRecord(res http.ResponseWriter, req *http.Request) {
@@ -1024,6 +1217,11 @@ func ajaxDeleteIPRecord(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1054,6 +1252,9 @@ func ajaxDeleteIPRecord(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除IP记录", "", fmt.Sprintf("IP ID: %s", request.UUID))
 }
 
 func ajaxListIPSets(res http.ResponseWriter, req *http.Request) {
@@ -1080,6 +1281,9 @@ func ajaxListIPSets(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看网段列表", "", "")
 }
 
 func ajaxCreateIPSetRecord(res http.ResponseWriter, req *http.Request) {
@@ -1087,6 +1291,11 @@ func ajaxCreateIPSetRecord(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1118,6 +1327,9 @@ func ajaxCreateIPSetRecord(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "创建IP网段", "", fmt.Sprintf("CIRD: %s", request.CIDR))
 }
 
 func ajaxDeleteIPSetRecord(res http.ResponseWriter, req *http.Request) {
@@ -1125,6 +1337,11 @@ func ajaxDeleteIPSetRecord(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1155,6 +1372,9 @@ func ajaxDeleteIPSetRecord(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除IP网段", "", fmt.Sprintf("网段ID: %s", request.UUID))
 }
 
 func ajaxListConnections(res http.ResponseWriter, req *http.Request) {
@@ -1181,6 +1401,9 @@ func ajaxListConnections(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看布线信息列表", "", "")
 }
 
 func ajaxCreateConnection(res http.ResponseWriter, req *http.Request) {
@@ -1188,6 +1411,11 @@ func ajaxCreateConnection(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1225,6 +1453,9 @@ func ajaxCreateConnection(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "新增布线", "", fmt.Sprintf("A端: %s B端: %s", request.SourceDeviceName, request.DestinationDeviceName))
 }
 
 func ajaxDeleteConnection(res http.ResponseWriter, req *http.Request) {
@@ -1232,6 +1463,11 @@ func ajaxDeleteConnection(res http.ResponseWriter, req *http.Request) {
 	if err != nil || token == "" {
 		ResMsg(res, 400, "请求中未包含token")
 		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return 
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1262,4 +1498,51 @@ func ajaxDeleteConnection(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除布线", "", fmt.Sprintf("布线ID: %s", request.UUID))
+}
+
+func ajaxListAuditRecords(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	request := &structs.ListAuditRecordsCondition{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	records, err := controller.Audit.ListRecords(request)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看审计记录", "", "")
 }

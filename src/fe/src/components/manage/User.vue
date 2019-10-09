@@ -11,6 +11,10 @@
             label="用户名">
         </el-table-column>
         <el-table-column
+            prop="role"
+            label="角色">
+        </el-table-column>
+        <el-table-column
             fixed="right"
             label="操作"
             width="100">
@@ -25,6 +29,12 @@
         <el-form :model="createUserForm">
             <el-form-item label="用户名" :label-width="formLabelWidth">
                 <el-input v-model="createUserForm.username" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="用户名" :label-width="formLabelWidth">
+                <el-select v-model="createUserForm.role" placeholder="请选择">
+                    <el-option value="普通用户">普通用户</el-option>
+                    <el-option value="管理员">管理员</el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="密码" :label-width="formLabelWidth">
                 <el-input v-model="createUserForm.password" autocomplete="off" type="password"></el-input>
@@ -52,7 +62,8 @@ export default {
           formLabelWidth: '120px',
           createUserForm: {
               username: "",
-              password: ""
+              password: "",
+              role: "普通用户"
           }
       }
   },
@@ -70,7 +81,8 @@ export default {
         that.createUserDialogVisible = false
         that.createUserForm = {
               username: "",
-              password: ""
+              password: "",
+              role: "普通用户"
           }
 
         Promise.all([
@@ -78,7 +90,11 @@ export default {
         ]).then(values => {
             that.$store.commit("setPageLoading", false)
         }).catch(errors => {
-            that.$message.error("页面加载异常")
+            that.$message({
+                type: 'error',
+                message: "页面加载异常",
+                offset: 200,
+            })
             console.error(errors)
             that.$store.commit("setPageLoading", false)
         })
@@ -92,7 +108,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.users = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     removeUser(user) {
@@ -103,18 +123,26 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     createUser () {
         var that = this
-        axios.post(that.config.getAddress("CREATE_USER"), {username: that.createUserForm.username, password: that.createUserForm.password})
+        axios.post(that.config.getAddress("CREATE_USER"), {username: that.createUserForm.username, password: that.createUserForm.password, role: that.createUserForm.role})
              .then(response => {
                  that.initData()
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     }
     

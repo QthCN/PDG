@@ -117,7 +117,11 @@ export default {
         ]).then(values => {
             that.$store.commit("setPageLoading", false)
         }).catch(errors => {
-            that.$message.error("页面加载异常")
+            that.$message({
+                type: 'error',
+                message: "页面加载异常",
+                offset: 200,
+            })
             console.error(errors)
             that.$store.commit("setPageLoading", false)
         })
@@ -131,7 +135,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.ips = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     syncIPSets () {
@@ -143,7 +151,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.ipsets = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     showTargetDevice (ip) {
@@ -160,7 +172,11 @@ export default {
                     })
                     .catch(error => {
                         console.error(error)
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     createIPSet () {
@@ -171,7 +187,11 @@ export default {
                     })
                     .catch(error => {
                         console.error(error)
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     }
   }

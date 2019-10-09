@@ -7,6 +7,7 @@ import PhysicalTopology from './components/device/PhysicalTopology.vue'
 import IpAndIpSet from './components/manage/IpAndIpSet.vue'
 import ResourceTopology from './components/device/ResourceTopology.vue'
 import NetworkTopology from './components/device/NetworkTopology.vue'
+import Audit from './components/manage/Audit.vue'
 
 
 
@@ -30,6 +31,11 @@ export default new Router({
       path: '/r/manage/l',
       name: 'Connection',
       component: Connection
+    },
+    {
+      path: '/r/manage/a',
+      name: 'Audit',
+      component: Audit
     },
     {
       path: '/r/device/p',

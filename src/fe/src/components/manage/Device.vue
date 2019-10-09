@@ -869,7 +869,11 @@ export default {
         ]).then(values => {
             that.$store.commit("setPageLoading", false)
         }).catch(errors => {
-            that.$message.error("页面加载异常")
+            that.$message({
+                type: 'error',
+                message: "页面加载异常",
+                offset: 200,
+            })
             console.error(errors)
             that.$store.commit("setPageLoading", false)
         })
@@ -893,7 +897,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.ipSets = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     removeDeviceIP (ip) {
@@ -904,7 +912,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     doAddIP () {
@@ -915,7 +927,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     syncDataCenters () {
@@ -927,7 +943,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.datacenters = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     removeDataCenter (datacenter) {
@@ -937,8 +957,12 @@ export default {
                  that.initData()
              })
              .catch(error => {
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
                 console.error(error)
-                that.$message.error(error.response.data.msg)
              })
     },
     createDataCenter () {
@@ -949,7 +973,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     syncRacks () {
@@ -967,7 +995,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.racks = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     showEditRackDatacenterDialog (rack) {
@@ -982,7 +1014,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     editDeviceRack () {
@@ -993,7 +1029,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     removeRack (rack) {
@@ -1004,7 +1044,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     createRack () {
@@ -1015,7 +1059,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     syncServerDevices () {
@@ -1039,7 +1087,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.serverDevices = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     removeServerDevice (server) {
@@ -1050,7 +1102,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     createServerDevice () {
@@ -1071,7 +1127,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     syncStorageDevices () {
@@ -1095,7 +1155,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.storageDevices = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     removeStorageDevice (device) {
@@ -1106,7 +1170,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     createStorageDevice () {
@@ -1124,7 +1192,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     syncNetworkDevices () {
@@ -1148,7 +1220,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.networkDevices = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     removeNetworkDevice (device) {
@@ -1159,7 +1235,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     createNetworkDevice () {
@@ -1177,7 +1257,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     syncCommonDevices () {
@@ -1201,7 +1285,11 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.commonDevices = []
-                        that.$message.error("获取数据异常")
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
                     })
     },
     removeCommonDevice (device) {
@@ -1212,7 +1300,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     },
     createCommonDevice () {
@@ -1230,7 +1322,11 @@ export default {
              })
              .catch(error => {
                 console.error(error)
-                that.$message.error(error.response.data.msg)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
              })
     }
   }
