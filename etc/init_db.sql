@@ -51,7 +51,7 @@ CREATE TABLE SERVER_DEVICE (
     model VARCHAR(256) NOT NULL COMMENT '型号',
     diskCapacity INT NOT NULL COMMENT '磁盘容量(TB)',
     memoryCapacity INT NOT NULL COMMENT '内存容量(GB)',
-    hostname VARCHAR(256) NOT NULL COMMENT '主机名',
+    hostname VARCHAR(128) NOT NULL COMMENT '主机名',
     createTime DATETIME NOT NULL COMMENT '记录创建时间',
     enableTime DATETIME NOT NULL COMMENT '服务器上架使用时间',
     expireTime DATETIME NOT NULL COMMENT '服务器过保时间',
@@ -143,6 +143,7 @@ CREATE TABLE IP (
 ) ENGINE = INNODB;
 
 CREATE TABLE IPSET (
+    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
     cidr VARCHAR(128) NOT NULL COMMENT 'CIDR',
     comment VARCHAR(1024) NOT NULL COMMENT '说明信息',
     isDeleted INT NOT NULL DEFAULT 0 COMMENT '是否被删除',
