@@ -139,7 +139,7 @@ func ajaxCreateUser(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -186,7 +186,7 @@ func ajaxRemoveUser(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -231,7 +231,7 @@ func ajaxCreateDataCenter(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -276,7 +276,7 @@ func ajaxDeleteDataCenter(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -427,7 +427,7 @@ func ajaxMapDeviceAndRack(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -476,7 +476,7 @@ func ajaxMapRackAndDatacenter(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -524,7 +524,7 @@ func ajaxCreateRack(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -570,7 +570,7 @@ func ajaxDeleteRack(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -644,7 +644,7 @@ func ajaxCreateServerDevice(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -697,7 +697,7 @@ func ajaxDeleteServerDevice(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -771,7 +771,7 @@ func ajaxCreateNetworkDevice(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -821,7 +821,7 @@ func ajaxDeleteNetworkDevice(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -895,7 +895,7 @@ func ajaxCreateStorageDevice(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -945,7 +945,7 @@ func ajaxDeleteStorageDevice(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1019,7 +1019,7 @@ func ajaxCreateCommonDevice(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1069,7 +1069,7 @@ func ajaxDeleteCommonDevice(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1172,7 +1172,7 @@ func ajaxCreateIPRecord(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1221,7 +1221,7 @@ func ajaxDeleteIPRecord(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1295,7 +1295,7 @@ func ajaxCreateIPSetRecord(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1341,7 +1341,7 @@ func ajaxDeleteIPSetRecord(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1415,7 +1415,7 @@ func ajaxCreateConnection(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1467,7 +1467,7 @@ func ajaxDeleteConnection(res http.ResponseWriter, req *http.Request) {
 
 	if isAdmin(token) == false {
 		ResMsg(res, 400, "权限不足")
-		return 
+		return
 	}
 
 	reqContent, err := ioutil.ReadAll(req.Body)
@@ -1545,4 +1545,458 @@ func ajaxListAuditRecords(res http.ResponseWriter, req *http.Request) {
 
 	// audit
 	audit(token, "查看审计记录", "", "")
+}
+
+func ajaxListMonitorItems(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	records, err := controller.Monitor.ListMonitorItems()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看监控项", "", "")
+}
+
+func ajaxCreateMonitorItem(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		Name      string `json:"name"`
+		DCType    string `json:"dc_type"`
+		AlertType string `json:"alert_type"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Monitor.CreateMonitorItem(request.Name, request.DCType, request.AlertType)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "新增监控项", "", fmt.Sprintf("监控项名称: %s", request.Name))
+}
+
+func ajaxUpdateMonitorItem(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		Id        int64  `json:"id"`
+		Name      string `json:"name"`
+		DCType    string `json:"dc_type"`
+		AlertType string `json:"alert_type"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Monitor.UpdateMonitorItem(request.Id, request.Name, request.DCType, request.AlertType)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "更新监控项", "", fmt.Sprintf("被更新监控项名称: %s", request.Name))
+}
+
+func ajaxDeleteMonitorItem(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		Id int64 `json:"id"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Monitor.DeleteMonitorItem(request.Id)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除监控项", "", fmt.Sprintf("被删除监控项名称: %s", request.Id))
+}
+
+func ajaxUpdateMonitorItemDCCfg(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		Id                int64  `json:"id"`
+		DCType            string `json:"dc_type"`
+		DCFakeCfgItemName string `json:"dc_fake_cfg_item_name"`
+		DCFakeCfgHostIp   string `json:"dc_fake_cfg_host_ip"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Monitor.UpdateMonitorItemDCCfg(request.Id, request.DCType, request.DCFakeCfgItemName, request.DCFakeCfgHostIp)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "更新监控项数据收集模块信息", "", fmt.Sprintf("被更新监控项ID: %d", request.Id))
+}
+
+func ajaxGetMonitorItemById(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		Id int64 `json:"id"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	records, err := controller.Monitor.GetMonitorItemById(request.Id)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看监控项数据收集模块详情", "", fmt.Sprintf("被查看监控项ID: %d", request.Id))
+}
+
+func ajaxListDeviceReleatedMonitorItems(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		UUID string `json:"uuid"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	records, err := controller.Monitor.ListDeviceReleatedMonitorItems(request.UUID)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看设备关联的监控项", "", fmt.Sprintf("被查的设备ID: %s", request.UUID))
+}
+
+func ajaxListMonitorItemReleatedDevices(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		ItemId int64 `json:"id"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	records, err := controller.Monitor.ListMonitorItemReleatedDevices(request.ItemId)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看监控项关联的设备", "", fmt.Sprintf("被查的监控项ID: %s", request.ItemId))
+}
+
+func ajaxListDevices(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	records, err := controller.Device.ListDevices()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看所有设备列表", "", "")
+}
+
+func ajaxBindMonitorItemAndDevice(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		ItemId     int64  `json:"item_id"`
+		ItemName   string `json:"item_name"`
+		DeviceUUID string `json:"device_uuid"`
+		DeviceType string `json:"device_type"`
+		DeviceName string `json:"device_name"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Monitor.BindMonitorItemAndDevice(request.ItemId, request.ItemName, request.DeviceUUID, request.DeviceType, request.DeviceName)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "绑定监控项和设备", "", fmt.Sprintf("绑定监控项 %s 和设备 %s", request.ItemName, request.DeviceName))
 }

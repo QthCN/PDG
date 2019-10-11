@@ -77,6 +77,9 @@ func initAjaxMapping(r *Server) {
 	r.RegistURLMapping("/v1/ajax/device/common/remove", "POST", ajaxDeleteCommonDevice)
 	r.RegistURLMapping("/v1/ajax/device/common/list", "GET", ajaxListCommonDevices)
 
+	// 设备通用接口
+	r.RegistURLMapping("/v1/ajax/device/list", "GET", ajaxListDevices)
+
 	// IP
 	r.RegistURLMapping("/v1/ajax/ip/create", "POST", ajaxCreateIPRecord)
 	r.RegistURLMapping("/v1/ajax/ip/remove", "POST", ajaxDeleteIPRecord)
@@ -94,4 +97,15 @@ func initAjaxMapping(r *Server) {
 
 	// 查看审计记录
 	r.RegistURLMapping("/v1/ajax/audit/list", "GET", ajaxListAuditRecords)
+
+	// 监控
+	r.RegistURLMapping("/v1/ajax/monitor/item/list", "GET", ajaxListMonitorItems)
+	r.RegistURLMapping("/v1/ajax/monitor/item/create", "POST", ajaxCreateMonitorItem)
+	r.RegistURLMapping("/v1/ajax/monitor/item/delete", "POST", ajaxDeleteMonitorItem)
+	r.RegistURLMapping("/v1/ajax/monitor/item/update", "POST", ajaxUpdateMonitorItem)
+	r.RegistURLMapping("/v1/ajax/monitor/item/detail", "GET", ajaxGetMonitorItemById)
+	r.RegistURLMapping("/v1/ajax/monitor/item/dc/update", "POST", ajaxUpdateMonitorItemDCCfg)
+	r.RegistURLMapping("/v1/ajax/monitor/item/device/list", "GET", ajaxListMonitorItemReleatedDevices)
+	r.RegistURLMapping("/v1/ajax/monitor/device/item/list", "GET", ajaxListDeviceReleatedMonitorItems)
+	r.RegistURLMapping("/v1/ajax/monitor/item/device/bind", "POST", ajaxBindMonitorItemAndDevice)
 }

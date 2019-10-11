@@ -121,6 +121,36 @@ Config.prototype.getAddress = function(target) {
         case "LIST_AUDIT_RECORDS":
                 url = `${this.baseAddress}/v1/ajax/audit/list`
                 break 
+        case "LIST_MONITOR_ITEMS":
+                url = `${this.baseAddress}/v1/ajax/monitor/item/list`
+                break 
+        case "CREATE_MONITOR_ITEM":
+                url = `${this.baseAddress}/v1/ajax/monitor/item/create`
+                break 
+        case "DELETE_MONITOR_ITEM":
+                url = `${this.baseAddress}/v1/ajax/monitor/item/delete`
+                break 
+        case "UPDATE_MONITOR_ITEM":
+                url = `${this.baseAddress}/v1/ajax/monitor/item/update`
+                break 
+        case "GET_MONITOR_ITEM":
+                url = `${this.baseAddress}/v1/ajax/monitor/item/detail`
+                break 
+        case "UPDATE_MONITOR_ITEM_DC_CFG":
+                url = `${this.baseAddress}/v1/ajax/monitor/item/dc/update`
+                break 
+        case "LIST_MONITOR_ITEM_RELEATED_DEVICES":
+                url = `${this.baseAddress}/v1/ajax/monitor/item/device/list`
+                break 
+        case "LIST_DEVICE_RELEATED_MONITOR_ITEMS":
+                url = `${this.baseAddress}/v1/ajax/monitor/device/item/list`
+                break 
+        case "LIST_DEVICES":
+                url = `${this.baseAddress}/v1/ajax/device/list`
+                break 
+        case "BIND_MONITOR_ITEM_AND_DEVICE":
+                url = `${this.baseAddress}/v1/ajax/monitor/item/device/bind`
+                break 
         default:
             console.error(`unknown target: ${target}`)
             break

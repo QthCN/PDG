@@ -1,5 +1,11 @@
 package structs
 
+type Device struct {
+	UUID string `json:"uuid"`
+	Name string `json:"name"`
+	DeviceType string `json:"device_type"`
+}
+
 type DataCenter struct {
 	UUID string `json:"uuid"`
 	Name string `json:"name"`

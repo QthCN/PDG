@@ -15,7 +15,7 @@ Auth.prototype.getCurrentUsername = function(callback) {
     axios.post(that.config.getAddress("GET_USERNAME"))
         .then(function(response){
             if (response.data.username !== "") {
-                callback(response.data.username)
+                callback(response.data.username, response.data.role)
             } else {
                 window.location.href = that.config.getAddress("LOGIN_PAGE")
             }

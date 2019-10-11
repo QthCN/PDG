@@ -799,10 +799,6 @@ export default {
 
         that.createRackDialogVisible = false
         that.racks = []
-        that.createRackForm = {
-              name: "",
-              size: 0,
-        }
         that.editRackDatacenterDialogVisible = false
         that.editRackUUID = ""
         that.editRackDatacenterForm = {
@@ -813,50 +809,15 @@ export default {
 
         that.createServerDeviceDialogVisible = false
         that.serverDevices = []
-        that.createServerDeviceForm = {
-              brand: "",
-              model: "",
-              disk_capacity: 0,
-              memory_capacity: 0,
-              hostname: "",
-              enable_time: "",
-              expire_time: "",
-              os: "",
-              comment: "",
-        }
 
         that.createStorageDeviceDialogVisible = false
         that.storageDevices = []
-        that.createStorageDeviceForm = {
-              brand: "",
-              model: "",
-              name: "",
-              enable_time: "",
-              expire_time: "",
-              comment: "",
-        }
 
         that.createNetworkDeviceDialogVisible = false
         that.networkDevices = []
-        that.createNetworkDeviceForm = {
-              brand: "",
-              model: "",
-              name: "",
-              enable_time: "",
-              expire_time: "",
-              comment: "",
-        }
 
         that.createCommonDeviceDialogVisible = false
         that.commonDevices = []
-        that.createCommonDeviceForm = {
-              brand: "",
-              model: "",
-              name: "",
-              enable_time: "",
-              expire_time: "",
-              comment: "",
-        }
         
         Promise.all([
             that.syncIPSets(),

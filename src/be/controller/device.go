@@ -434,3 +434,65 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 
 	return topology, nil
 }
+
+func (m *DeviceMgr) ListDevices() ([]*structs.Device, error) {
+	devices := []*structs.Device{}
+
+	// 服务器
+	serverDevices, err := m.ListServerDevices()
+	if err != nil {
+		return nil, err
+	}
+	for _, device := range serverDevices {
+		record := &structs.Device{
+			UUID:       device.UUID,
+			Name:       device.Hostname,
+			DeviceType: "SERVER",
+		}
+		devices = append(devices, record)
+	}
+
+	// 网络设备
+	networkDevices, err := m.ListNetworkDevices()
+	if err != nil {
+		return nil, err
+	}
+	for _, device := range networkDevices {
+		record := &structs.Device{
+			UUID:       device.UUID,
+			Name:       device.Name,
+			DeviceType: "NETWORK",
+		}
+		devices = append(devices, record)
+	}
+
+	// 存储
+	storageDevices, err := m.ListStorageDevices()
+	if err != nil {
+		return nil, err
+	}
+	for _, device := range storageDevices {
+		record := &structs.Device{
+			UUID:       device.UUID,
+			Name:       device.Name,
+			DeviceType: "STORAGE",
+		}
+		devices = append(devices, record)
+	}
+
+	// 其它设备
+	commonDevices, err := m.ListCommonDevices()
+	if err != nil {
+		return nil, err
+	}
+	for _, device := range commonDevices {
+		record := &structs.Device{
+			UUID:       device.UUID,
+			Name:       device.Name,
+			DeviceType: "COMMON",
+		}
+		devices = append(devices, record)
+	}
+
+	return devices, nil
+}

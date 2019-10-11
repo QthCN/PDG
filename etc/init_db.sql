@@ -143,7 +143,6 @@ CREATE TABLE IP (
 ) ENGINE = INNODB;
 
 CREATE TABLE IPSET (
-    uuid VARCHAR(128) NOT NULL COMMENT '唯一ID',
     cidr VARCHAR(128) NOT NULL COMMENT 'CIDR',
     comment VARCHAR(1024) NOT NULL COMMENT '说明信息',
     isDeleted INT NOT NULL DEFAULT 0 COMMENT '是否被删除',
@@ -160,4 +159,39 @@ CREATE TABLE AUDIT (
     PRIMARY KEY (id),
     KEY (username),
     KEY (actionTime)
+) ENGINE = INNODB;
+
+CREATE TABLE MONITOR_ITEM (
+    id INT NOT NULL AUTO_INCREMENT COMMENT '唯一ID',
+    name VARCHAR(128) NOT NULL COMMENT '监控项名称',
+    isInternal INT NOT NULL COMMENT '是否为系统自带监控项',
+    dcType VARCHAR(128) NOT NULL COMMENT '数据采集模块类型',
+    alertType VARCHAR(128) NOT NULL COMMENT '告警模块类型',
+    PRIMARY KEY (id)
+) ENGINE = INNODB;
+
+INSERT INTO MONITOR_ITEM(name, isInternal, dcType, alertType) VALUES("设备可达情况", 1, "", "");
+INSERT INTO MONITOR_ITEM(name, isInternal, dcType, alertType) VALUES("CPU使用率", 1, "", "");
+INSERT INTO MONITOR_ITEM(name, isInternal, dcType, alertType) VALUES("内存使用率", 1, "", "");
+
+
+CREATE TABLE MONITOR_ITEM_DC_FAKE_CFG (
+    id INT NOT NULL AUTO_INCREMENT COMMENT '唯一ID',
+    itemId INT NOT NULL COMMENT '映射的监控项ID',
+    fakeItemName VARCHAR(128) NOT NULL COMMENT 'Fake监控中对应的监控项名称',
+    hostip VARCHAR(128) NOT NULL COMMENT 'Fake监控中对应的主机IP',
+    PRIMARY KEY (id),
+    KEY (itemId)
+) ENGINE = INNODB;
+
+CREATE TABLE MONITOR_ITEM_DEVICE_MAPPING (
+    id INT NOT NULL AUTO_INCREMENT COMMENT '唯一ID',
+    itemId INT NOT NULL COMMENT '映射的监控项ID',
+    itemName VARCHAR(128) NOT NULL COMMENT '监控项名称',
+    deviceUUID VARCHAR(128) NOT NULL COMMENT '设备ID',
+    deviceType VARCHAR(128) NOT NULL COMMENT '设备类型',
+    deviceName VARCHAR(128) NOT NULL COMMENT '设备名',
+    PRIMARY KEY (id),
+    KEY (itemId),
+    KEY (deviceUUID)
 ) ENGINE = INNODB;

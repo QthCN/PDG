@@ -19,8 +19,9 @@ router.beforeEach((to, _from, next) => {
 
   // 检查用户是否登录，如果没有登陆则跳转登录页
   if (store.state.currentUser === "游客") {
-    (new Auth()).getCurrentUsername((username) => {
+    (new Auth()).getCurrentUsername((username, role) => {
       store.commit("setCurrentUser", username)
+      store.commit("setCurrentUserRole", role)
       next()
     })
   } else {

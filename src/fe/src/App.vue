@@ -51,18 +51,20 @@
               <el-menu-item index="/r/monitor/a">告警大盘</el-menu-item>
             </el-submenu>
 
-            <el-submenu index="平台管理">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span slot="title">平台管理</span>
-              </template>
-              <el-menu-item index="/r/manage/d">资源管理</el-menu-item>
-              <el-menu-item index="/r/manage/l">布线管理</el-menu-item>
-              <el-menu-item index="/r/manage/m">监控管理</el-menu-item>
-              <el-menu-item index="/r/manage/i">IP及网段管理</el-menu-item>
-              <el-menu-item index="/r/manage/u">人员管理</el-menu-item>
-              <el-menu-item index="/r/manage/a">操作审计</el-menu-item>
-            </el-submenu>
+            <template v-if="$store.state.currentUserRole === '管理员'">
+              <el-submenu index="平台管理">
+                <template slot="title">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">平台管理</span>
+                </template>
+                <el-menu-item index="/r/manage/d">资源管理</el-menu-item>
+                <el-menu-item index="/r/manage/l">布线管理</el-menu-item>
+                <el-menu-item index="/r/manage/m">监控管理</el-menu-item>
+                <el-menu-item index="/r/manage/i">IP及网段管理</el-menu-item>
+                <el-menu-item index="/r/manage/u">人员管理</el-menu-item>
+                <el-menu-item index="/r/manage/a">操作审计</el-menu-item>
+              </el-submenu>
+            </template>
 
             <div class="collapse-button" @click="collapse">
               <template v-if="isCollapse">
@@ -145,6 +147,7 @@ body,
   line-height: 56px; 
   text-align: center;
   width: 100%;
+  margin-top: 60px;
 }
 
 .collapse-button i {

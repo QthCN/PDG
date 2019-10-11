@@ -30,7 +30,7 @@
             <el-form-item label="用户名" :label-width="formLabelWidth">
                 <el-input v-model="createUserForm.username" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="用户名" :label-width="formLabelWidth">
+            <el-form-item label="角色" :label-width="formLabelWidth">
                 <el-select v-model="createUserForm.role" placeholder="请选择">
                     <el-option value="普通用户">普通用户</el-option>
                     <el-option value="管理员">管理员</el-option>

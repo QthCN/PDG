@@ -38,7 +38,7 @@ func (m *AuthMgr) GetUserInfoByToken(token string) (*structs.UserInfo, error) {
 	if *option.Mode == "DEV" {
 		return &structs.UserInfo{
 			Username: "ADMIN",
-			Role: "普通用户",
+			Role: "管理员",
 		}, nil
 	}
 	return m.dao.GetUserInfoByToken(token)
