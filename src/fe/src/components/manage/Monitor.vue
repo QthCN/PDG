@@ -309,7 +309,10 @@ export default {
         that.bindDevices = []
         return axios.post(that.config.getAddress("LIST_MONITOR_ITEM_RELEATED_DEVICES"), {id: itemId})
                     .then(response => {
-                        that.bindDevices = response.data
+                        that.bindDevices = []
+                        for (var bd of response.data) {
+                            that.bindDevices.push(bd.device_uuid)
+                        }
                     })
                     .catch(error => {
                         console.error(error)
@@ -374,7 +377,8 @@ export default {
             records.push(that.doBindDeviceAndMonitorItem(that.bindDeviceMonitorItemId, that.bindDeviceMonitorItemName, toBindDeviceUUID.uuid, toBindDeviceUUID.name, toBindDeviceUUID.device_type))
         }
 
-        Promise.all(records).then(values => {
+        Promise.all(records)
+        .then(values => {
             that.initData()
         }).catch(errors => {
             that.$message({
