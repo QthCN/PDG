@@ -9,6 +9,37 @@ type MonitorItemReleatedDevice struct {
 	DeviceName      string `json:"device_name"`
 }
 
+type HistoryDataFilter struct {
+	DeviceUUID     string `json:"device_uuid"`
+	ItemId         int64  `json:"item_id"`
+	QueryBeginDate string `json:"query_begin_date"`
+	QueryEndDate   string `json:"query_end_date"`
+}
+
+type HistoryDataRecord struct {
+	Key   string  `json:"key"`
+	Value float64 `json:"value"`
+}
+
+type MonitorBackendCfg struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+	Cfg  string `json:"cfg"`
+
+	FakeCfg   *MonitorBackendFakeCfg   `json:"cfg_fake"`
+	ZabbixCfg *MonitorBackendZabbixCfg `json:"cfg_zabbix"`
+}
+
+type MonitorBackendFakeCfg struct {
+	Address string `json:"address"`
+}
+
+type MonitorBackendZabbixCfg struct {
+	Address  string `json:"address"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 // 监控项
 type MonitorItem struct {
 	Id   int64  `json:"id"`

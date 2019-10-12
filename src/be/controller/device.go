@@ -3,6 +3,7 @@ package controller
 import (
 	"be/dao"
 	"be/structs"
+	"fmt"
 )
 
 type DeviceMgr struct {
@@ -433,6 +434,19 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 	}
 
 	return topology, nil
+}
+
+func (m *DeviceMgr) GetDeviceByUUD(uuid string) (*structs.Device, error) {
+	devices, err := m.ListDevices()
+	if err != nil {
+		return nil, err
+	}
+	for _, device := range devices {
+		if device.UUID == uuid {
+			return device, nil
+		}
+	}
+	return nil, fmt.Errorf("设备不存在 %s", uuid)
 }
 
 func (m *DeviceMgr) ListDevices() ([]*structs.Device, error) {

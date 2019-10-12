@@ -151,6 +151,15 @@ Config.prototype.getAddress = function(target) {
         case "BIND_MONITOR_ITEM_AND_DEVICE":
                 url = `${this.baseAddress}/v1/ajax/monitor/item/device/bind`
                 break 
+        case "GET_MONITOR_HISTORY_RECORDS":
+                url = `${this.baseAddress}/v1/ajax/monitor/history/query`
+                break 
+        case "LIST_MONITOR_BACKEND_CFGS":
+                url = `${this.baseAddress}/v1/ajax/monitor/backend/list`
+                break 
+        case "UPDATE_BACKEND_CFG":
+                url = `${this.baseAddress}/v1/ajax/monitor/backend/update`
+                break 
         default:
             console.error(`unknown target: ${target}`)
             break

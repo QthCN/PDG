@@ -1,8 +1,8 @@
 <template>
   <div>
         <el-tabs type="border-card">
-                <el-button type="primary" plain size="small" style="float: right; margin-bottom: 5px;" @click="createMonitorItemDialogShow = true">新建监控项</el-button>
                 <el-tab-pane label="监控项管理">
+                    <el-button type="primary" plain size="small" style="float: right; margin-bottom: 5px;" @click="createMonitorItemDialogShow = true">新建监控项</el-button>
                     <el-table
                         :data="monitorItems"
                         border
@@ -35,6 +35,25 @@
                 </el-tab-pane>
 
                 <el-tab-pane label="监控服务管理">
+                    <el-collapse>
+                        <el-collapse-item title="ZABBIX" name="ZABBIX">
+                            <el-form :model="updateMonitorBackendZabbixForm">
+                                <el-form-item label="Zabbix地址" :label-width="formLabelWidth">
+                                    <el-input v-model="updateMonitorBackendZabbixForm.address" autocomplete="off"></el-input>
+                                </el-form-item>
+                                <el-form-item label="用户名" :label-width="formLabelWidth">
+                                    <el-input v-model="updateMonitorBackendZabbixForm.username" autocomplete="off"></el-input>
+                                </el-form-item>
+                                <el-form-item label="密码" :label-width="formLabelWidth">
+                                    <el-input 
+                                    type="password" v-model="updateMonitorBackendZabbixForm.password" autocomplete="off"></el-input>
+                                </el-form-item>
+                            </el-form>
+
+                                <el-button type="primary" plain style="float: right;" @click="updateMonitorBackendZabbixCfg">更 新</el-button>
+                                <br/><br/>
+                        </el-collapse-item>
+                    </el-collapse>
                 </el-tab-pane>
         </el-tabs>
 
@@ -145,6 +164,12 @@ export default {
           bindDeviceMonitorItemId: 0,
           bindDeviceMonitorItemName: "",
           bindDevices: [],
+          monitorBackendCfgs: [],
+          updateMonitorBackendZabbixForm: {
+              address: "",
+              username: "",
+              password: "",
+          },
       }
   },
   computed: {
@@ -178,6 +203,7 @@ export default {
 
         Promise.all([
             that.syncMonitorItems(),
+            that.syncMonitorBackendCfgs(),
             that.syncDevices()
         ]).then(values => {
             that.$store.commit("setPageLoading", false)
@@ -190,6 +216,29 @@ export default {
             console.error(errors)
             that.$store.commit("setPageLoading", false)
         })
+    },
+    syncMonitorBackendCfgs () {
+        var that = this
+        return axios.post(that.config.getAddress("LIST_MONITOR_BACKEND_CFGS"))
+                    .then(response => {
+                        that.monitorBackendCfgs = response.data
+                        for (var cfg of that.monitorBackendCfgs) {
+                            if (cfg.name === "ZABBIX") {
+                                that.updateMonitorBackendZabbixForm = cfg.cfg_zabbix
+                            } else {
+
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        that.monitorBackendCfgs = []
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
+                    })
     },
     syncDevices () {
         var that = this
@@ -374,7 +423,8 @@ export default {
         var records = []
         for (var toBindDeviceUUID of that.bindDevices) {
             var toBindDevice = that.getDeviceByUUID(toBindDeviceUUID)
-            records.push(that.doBindDeviceAndMonitorItem(that.bindDeviceMonitorItemId, that.bindDeviceMonitorItemName, toBindDeviceUUID.uuid, toBindDeviceUUID.name, toBindDeviceUUID.device_type))
+            console.log(JSON.stringify(toBindDevice))
+            records.push(that.doBindDeviceAndMonitorItem(that.bindDeviceMonitorItemId, that.bindDeviceMonitorItemName, toBindDevice.uuid, toBindDevice.name, toBindDevice.device_type))
         }
 
         Promise.all(records)
@@ -388,6 +438,29 @@ export default {
             })
             console.error(errors)
         })
+    },
+    updateMonitorBackendZabbixCfg () {
+        var that = this
+        axios.post(that.config.getAddress("UPDATE_BACKEND_CFG"), {
+            backend_name: "ZABBIX",
+            cfg: JSON.stringify(that.updateMonitorBackendZabbixForm),
+        })
+             .then(response => {
+                that.$message({
+                    type: 'success',
+                    message: "操作成功",
+                    offset: 200,
+                })
+                 that.initData()
+             })
+             .catch(error => {
+                console.error(error)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
+             })
     },
     configAlert(monitorItem) {
 

@@ -230,6 +230,16 @@ func (d *MonitorDAO) ListDeviceReleatedMonitorItems(uuid string) ([]*structs.Mon
 	return records, nil
 }
 
+func (d *MonitorDAO) UnBindMonitorItemReleatedDevices(itemId int64) error {
+	err := mysql.DB.SimpleExec("DELETE FROM MONITOR_ITEM_DEVICE_MAPPING WHERE itemId=?", itemId)
+	if err != nil {
+		log.Errorln(err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func (d *MonitorDAO) BindMonitorItemAndDevice(itemId int64, itemName string, deviceUUID string, deviceType string, deviceName string) error {
 	err := mysql.DB.SimpleExec("DELETE FROM MONITOR_ITEM_DEVICE_MAPPING WHERE itemId=? AND deviceUUID=?", itemId, deviceUUID)
 	if err != nil {
@@ -238,6 +248,64 @@ func (d *MonitorDAO) BindMonitorItemAndDevice(itemId int64, itemName string, dev
 	}
 
 	err = mysql.DB.SimpleExec("INSERT INTO MONITOR_ITEM_DEVICE_MAPPING(itemId, itemName, deviceUUID, deviceType, deviceName) VALUES(?, ?, ?, ?, ?)", itemId, itemName, deviceUUID, deviceType, deviceName)
+	if err != nil {
+		log.Errorln(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func (d *MonitorDAO) ListMonitorBackendCfgs() ([]*structs.MonitorBackendCfg, error) {
+	records := []*structs.MonitorBackendCfg{}
+	var err error
+	tx := mysql.DB.GetTx()
+	defer func() {
+		if err == nil {
+			tx.Commit()
+		} else {
+			tx.Rollback()
+		}
+	}()
+
+	sql := `SELECT MONITOR_BACKEND_CFG.id, MONITOR_BACKEND_CFG.backendName, MONITOR_BACKEND_CFG.cfgStr  FROM MONITOR_BACKEND_CFG`
+	stmt, err := tx.Prepare(sql)
+	if err != nil {
+		log.Errorln(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		log.Errorln(err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		record := &structs.MonitorBackendCfg{
+			FakeCfg:   &structs.MonitorBackendFakeCfg{},
+			ZabbixCfg: &structs.MonitorBackendZabbixCfg{},
+		}
+		if err = rows.Scan(&record.Id, &record.Name, &record.Cfg); err != nil {
+			log.Errorln(err.Error())
+			return nil, err
+		}
+		records = append(records, record)
+	}
+
+	return records, nil
+}
+
+func (d *MonitorDAO) UpdateMonitorBackendCfg(backendName string, cfg string) error {
+	err := mysql.DB.SimpleExec("DELETE FROM MONITOR_BACKEND_CFG WHERE backendName=?", backendName)
+	if err != nil {
+		log.Errorln(err.Error())
+		return err
+	}
+
+	err = mysql.DB.SimpleExec("INSERT INTO MONITOR_BACKEND_CFG(backendName, cfgStr) VALUES(?, ?)", backendName, cfg)
 	if err != nil {
 		log.Errorln(err.Error())
 		return err

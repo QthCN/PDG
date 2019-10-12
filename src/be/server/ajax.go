@@ -2000,3 +2000,127 @@ func ajaxBindMonitorItemAndDevice(res http.ResponseWriter, req *http.Request) {
 	// audit
 	audit(token, "绑定监控项和设备", "", fmt.Sprintf("绑定监控项 %s 和设备 %s", request.ItemName, request.DeviceName))
 }
+
+func ajaxGetDeviceMonitorItemHistoryData(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	request := &structs.HistoryDataFilter{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	records, err := controller.Monitor.GetDeviceMonitorItemHistoryData(request)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看监控信息", "", fmt.Sprintf("被查的监控项ID: %s, 设备项 %s", request.ItemId, request.DeviceUUID))
+}
+
+func ajaxListMonitorBackendCfgs(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	records, err := controller.Monitor.ListMonitorBackendCfgs()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看监控服务信息", "", "")
+}
+
+func ajaxUpdateMonitorBackendCfg(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		BackendName string `json:"backend_name"`
+		Cfg         string `json:"cfg"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Monitor.UpdateMonitorBackendCfg(request.BackendName, request.Cfg)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "更新监控服务信息", "", fmt.Sprintf("监控服务 %s", request.BackendName))
+}

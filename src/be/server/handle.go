@@ -108,4 +108,11 @@ func initAjaxMapping(r *Server) {
 	r.RegistURLMapping("/v1/ajax/monitor/item/device/list", "GET", ajaxListMonitorItemReleatedDevices)
 	r.RegistURLMapping("/v1/ajax/monitor/device/item/list", "GET", ajaxListDeviceReleatedMonitorItems)
 	r.RegistURLMapping("/v1/ajax/monitor/item/device/bind", "POST", ajaxBindMonitorItemAndDevice)
+
+	// 监控服务
+	r.RegistURLMapping("/v1/ajax/monitor/backend/list", "GET", ajaxListMonitorBackendCfgs)
+	r.RegistURLMapping("/v1/ajax/monitor/backend/update", "POST", ajaxUpdateMonitorBackendCfg)
+
+	// 监控数据获取
+	r.RegistURLMapping("/v1/ajax/monitor/history/query", "GET", ajaxGetDeviceMonitorItemHistoryData)
 }

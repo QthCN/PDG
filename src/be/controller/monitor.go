@@ -2,7 +2,11 @@ package controller
 
 import (
 	"be/dao"
+	"be/monitor"
+	monitor_fake "be/monitor/fake"
 	"be/structs"
+	"be/util"
+	"fmt"
 	"math/rand"
 )
 
@@ -58,5 +62,96 @@ func (m *MonitorMgr) ListMonitorItemReleatedDevices(itemId int64) ([]*structs.Mo
 }
 
 func (m *MonitorMgr) BindMonitorItemAndDevice(itemId int64, itemName string, deviceUUID string, deviceType string, deviceName string) error {
+	if err := m.dao.UnBindMonitorItemReleatedDevices(itemId); err != nil {
+		return err
+	}
+
 	return m.dao.BindMonitorItemAndDevice(itemId, itemName, deviceUUID, deviceType, deviceName)
+}
+
+func (m *MonitorMgr) GetMonitorBackendCfgByName(name string) (*structs.MonitorBackendCfg, error) {
+	cfgs, err := m.ListMonitorBackendCfgs()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, cfg := range cfgs {
+		if cfg.Name == name {
+			return cfg, nil
+		}
+	}
+
+	return nil, fmt.Errorf("获取监控服务失败，无相关名称的监控服务")
+}
+
+func (m *MonitorMgr) ListMonitorBackendCfgs() ([]*structs.MonitorBackendCfg, error) {
+	cfgs, err := m.dao.ListMonitorBackendCfgs()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, cfg := range cfgs {
+		switch cfg.Name {
+		case "FAKE":
+			if err := util.ParseJsonStr(cfg.Cfg, &cfg.FakeCfg); err != nil {
+				return nil, err
+			}
+			break
+		case "ZABBIX":
+			if err := util.ParseJsonStr(cfg.Cfg, &cfg.ZabbixCfg); err != nil {
+				return nil, err
+			}
+			break
+		default:
+			break
+		}
+	}
+
+	return cfgs, nil
+}
+
+func (m *MonitorMgr) UpdateMonitorBackendCfg(backendName string, cfg string) error {
+	return m.dao.UpdateMonitorBackendCfg(backendName, cfg)
+}
+
+func (m *MonitorMgr) GetDeviceMonitorItemHistoryData(filter *structs.HistoryDataFilter) ([]*structs.HistoryDataRecord, error) {
+	records := []*structs.HistoryDataRecord{}
+
+	monitorItem, err := m.dao.GetMonitorItemById(filter.ItemId)
+	if err != nil {
+		return nil, err
+	}
+
+	var monitorProxy monitor.MonitorProxyBase
+	switch monitorItem.DCType {
+	case "FAKE":
+		monitorProxy = &monitor_fake.FakeMonitorProxy{}
+		break
+	}
+
+	if monitorProxy == nil {
+		return nil, fmt.Errorf("设备未关联监控服务")
+	}
+
+	var deviceIp string
+	deviceIpRecords, err := Ip.GetIpByTargetID(filter.DeviceUUID)
+	if err != nil {
+		return nil, err
+	}
+	for _, deviceIpRecord := range deviceIpRecords {
+		if deviceIpRecord.Role == "业务" {
+			deviceIp = deviceIpRecord.IPAddress
+			break
+		}
+	}
+	if deviceIp == "" {
+		return nil, fmt.Errorf("设备IP信息获取无效")
+	}
+
+	records, err = monitorProxy.GetDeviceHistoryDataRecords(deviceIp, monitorItem, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	return records, nil
 }
