@@ -15,11 +15,13 @@
                 <el-tabs type="border-card">
                     <el-tab-pane label="监控数据">
                       <el-row>
-                        <LinePic :title="'CPU监控数据'" :records="cpuMonitorRecords"></LinePic>
+                        <h3>CPU使用率</h3>
+                        <LinePic :title="'CPU监控数据'" :records="cpuMonitorRecords" :key="cpuPicKey"></LinePic>
                       </el-row>
-                        <LinePic :title="'内存监控数据'" :records="memoryMonitorRecords"></LinePic>
+
                       <el-row>
-                        
+                        <h3>内存使用率</h3>
+                        <LinePic :title="'内存监控数据'" :records="memoryMonitorRecords" :key="memoryPicKey"></LinePic>
                       </el-row>
                     </el-tab-pane>
                     <el-tab-pane label="实时告警">
@@ -50,7 +52,9 @@ export default {
           monitorItems: [],
           // 基本监控数据类型: CPU/MEMORY
           cpuMonitorRecords: [],
+          cpuPicKey: 0,
           memoryMonitorRecords: [],
+          memoryPicKey: 0,
       }
   },
   created () {
@@ -156,6 +160,7 @@ export default {
       })
                   .then(response => {
                       that.cpuMonitorRecords = response.data
+                      that.cpuPicKey += 1
                   })
                   .catch(error => {
                       console.error(error)
@@ -181,6 +186,7 @@ export default {
       })
                   .then(response => {
                       that.memoryMonitorRecords = response.data
+                      that.memoryPicKey += 1
                   })
                   .catch(error => {
                       console.error(error)
