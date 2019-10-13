@@ -79,6 +79,7 @@ func initAjaxMapping(r *Server) {
 
 	// 设备通用接口
 	r.RegistURLMapping("/v1/ajax/device/list", "GET", ajaxListDevices)
+	r.RegistURLMapping("/v1/ajax/device/get", "GET", ajaxGetDeviceByUUID)
 
 	// IP
 	r.RegistURLMapping("/v1/ajax/ip/create", "POST", ajaxCreateIPRecord)

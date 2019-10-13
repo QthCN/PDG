@@ -436,7 +436,7 @@ func (m *DeviceMgr) GetPhysicalTopology(datacenterUUID string) (*structs.Physica
 	return topology, nil
 }
 
-func (m *DeviceMgr) GetDeviceByUUD(uuid string) (*structs.Device, error) {
+func (m *DeviceMgr) GetDeviceByUUID(uuid string) (*structs.Device, error) {
 	devices, err := m.ListDevices()
 	if err != nil {
 		return nil, err

@@ -154,6 +154,9 @@ func ajaxCreateUser(res http.ResponseWriter, req *http.Request) {
 		Username string `json:"username"`
 		Password string `json:"password"`
 		Role     string `json:"role"`
+		Mobile   string `json:"mobile"`
+		Mail     string `json:"mail"`
+		WX       string `json:"wx"`
 	}
 
 	request := &Request{}
@@ -166,7 +169,7 @@ func ajaxCreateUser(res http.ResponseWriter, req *http.Request) {
 	// audit
 	audit(token, "新建用户", "", fmt.Sprintf("用户名: %s", request.Username))
 
-	err = controller.Auth.CreateUser(request.Username, request.Password, request.Role)
+	err = controller.Auth.CreateUser(request.Username, request.Password, request.Role, request.Mobile, request.Mail, request.WX)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err.Error(),
@@ -1999,6 +2002,59 @@ func ajaxBindMonitorItemAndDevice(res http.ResponseWriter, req *http.Request) {
 
 	// audit
 	audit(token, "绑定监控项和设备", "", fmt.Sprintf("绑定监控项 %s 和设备 %s", request.ItemName, request.DeviceName))
+}
+
+func ajaxGetDeviceByUUID(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		UUID string `json:"uuid"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	records, err := controller.Device.GetDeviceByUUID(request.UUID)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看设备信息信息", "", fmt.Sprintf("设备ID %s", request.UUID))
 }
 
 func ajaxGetDeviceMonitorItemHistoryData(res http.ResponseWriter, req *http.Request) {

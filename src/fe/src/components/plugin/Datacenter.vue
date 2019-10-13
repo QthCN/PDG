@@ -1,8 +1,8 @@
 <template>
   <div style="">
-    <canvas id="renderCanvas" touch-action="none" style="width: 100%; height: 100%;"></canvas> 
+    <canvas id="renderCanvas" touch-action="none" :width="canvasWidth" :height="canvasHeight"></canvas> 
 
-    <el-dialog title="设备信息" :visible.sync="serverDeviceStatusDialogVisible" width="80%">
+    <el-dialog :title="deviceName" :visible.sync="serverDeviceStatusDialogVisible" width="80%">
         <DeviceStatus :uuid="deviceUUID" :device-type="deviceType"></DeviceStatus>
     </el-dialog>
 
@@ -26,19 +26,41 @@ import floor0 from '../../assets/floor0.png'
 
 import DeviceStatus from './DeviceStatus.vue'
 
+function getActualWidth()
+{
+    var actualWidth = window.innerWidth ||
+                    document.documentElement.clientWidth ||
+                    document.body.clientWidth ||
+                    document.body.offsetWidth;
+
+    return actualWidth;
+}
+
+function getActualHeight()
+{
+    var actualHeight = window.innerHeight ||
+                    document.documentElement.clientHeight ||
+                    document.body.clientHeight ||
+                    document.body.offsetHeight;
+    return actualHeight;
+}
+
 export default {
   name: 'Datacenter',
   props: ['datacenter'],
   data () {
       return {
+        canvasWidth: getActualWidth() - 250,
+        canvasHeight: getActualHeight() - 70,
         serverDeviceStatusDialogVisible: false,
         deviceUUID: "",
         deviceType: "",
-
+        deviceName: "",
         connectionStatusDialogVisible: false,
       }
   },
   created () {
+      var that = this
 
   },
   components: {
@@ -53,6 +75,11 @@ export default {
         var server = evt.source.__server
         this.deviceUUID = server.uuid
         this.deviceType = server.type
+        if (server.hostname !== undefined && server.hostname !== null) {
+            this.deviceName = server.hostname
+        } else {
+            this.deviceName = server.name
+        }
         this.serverDeviceStatusDialogVisible = true
     },
     showConnectionInfo (evt) {
@@ -79,7 +106,7 @@ export default {
             var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(-1, 1, 0), scene);
 
             // Default intensity is 1. Let's dim the light a small amount
-            light.intensity = 0.7;
+            light.intensity = 1;
 
             that.doRender(scene, light)
 

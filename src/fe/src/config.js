@@ -148,6 +148,9 @@ Config.prototype.getAddress = function(target) {
         case "LIST_DEVICES":
                 url = `${this.baseAddress}/v1/ajax/device/list`
                 break 
+        case "GET_DEVICE":
+                url = `${this.baseAddress}/v1/ajax/device/get`
+                break
         case "BIND_MONITOR_ITEM_AND_DEVICE":
                 url = `${this.baseAddress}/v1/ajax/monitor/item/device/bind`
                 break 

@@ -4,4 +4,7 @@ package structs
 type UserInfo struct {
 	Username string `json:"username"`
 	Role     string `json:"role"`
+	Mobile   string `json:"mobile"`
+	Mail     string `json:"mail"`
+	WX       string `json:"wx"`
 }

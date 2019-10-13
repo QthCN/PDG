@@ -27,29 +27,22 @@
         <el-aside :width="asideWidth">
           
           <el-menu :default-active="indexSelected" router @select="changeIndex" style="height: 100%;" :collapse="isCollapse" :collapse-transition="false" :unique-opened="true">
-            <el-menu-item index="/r/dashboard">
+            <el-menu-item index="/r/monitor/m">
                 <i class="el-icon-s-marketing"></i>
-                <span slot="title">平台大盘</span>
+                <span slot="title">监控大盘</span>
             </el-menu-item>
-
-            <el-submenu index="资源情况">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span slot="title">资源情况</span>
-              </template>
-              <el-menu-item index="/r/device/p">物理拓扑</el-menu-item>
-              <el-menu-item index="/r/device/n">网络拓扑</el-menu-item>
-              <el-menu-item index="/r/device/l">资源拓扑</el-menu-item>
-            </el-submenu>
-
-            <el-submenu index="监控数据">
-              <template slot="title">
-                <i class="el-icon-s-order"></i>
-                <span slot="title">监控数据</span>
-              </template>
-              <el-menu-item index="/r/monitor/m">监控大盘</el-menu-item>
-              <el-menu-item index="/r/monitor/a">告警大盘</el-menu-item>
-            </el-submenu>
+            <el-menu-item index="/r/device/p">
+                <i class="el-icon-s-home"></i>
+                <span slot="title">物理拓扑</span>
+            </el-menu-item>
+            <el-menu-item index="/r/device/n">
+                <i class="el-icon-s-help"></i>
+                <span slot="title">网络拓扑</span>
+            </el-menu-item>
+            <el-menu-item index="/r/device/l">
+                <i class="el-icon-s-grid"></i>
+                <span slot="title">资源拓扑</span>
+            </el-menu-item>
 
             <template v-if="$store.state.currentUserRole === '管理员'">
               <el-submenu index="平台管理">

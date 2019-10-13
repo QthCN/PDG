@@ -15,6 +15,18 @@
             label="角色">
         </el-table-column>
         <el-table-column
+            prop="mobile"
+            label="手机号">
+        </el-table-column>
+        <el-table-column
+            prop="mail"
+            label="邮箱">
+        </el-table-column>
+        <el-table-column
+            prop="wx"
+            label="微信号">
+        </el-table-column>
+        <el-table-column
             fixed="right"
             label="操作"
             width="100">
@@ -38,6 +50,15 @@
             </el-form-item>
             <el-form-item label="密码" :label-width="formLabelWidth">
                 <el-input v-model="createUserForm.password" autocomplete="off" type="password"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号" :label-width="formLabelWidth">
+                <el-input v-model="createUserForm.mobile" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱" :label-width="formLabelWidth">
+                <el-input v-model="createUserForm.mail" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="微信号" :label-width="formLabelWidth">
+                <el-input v-model="createUserForm.wx" autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -63,7 +84,10 @@ export default {
           createUserForm: {
               username: "",
               password: "",
-              role: "普通用户"
+              role: "普通用户",
+              mobile: "",
+              mail: "",
+              wx: "",
           }
       }
   },
@@ -82,7 +106,10 @@ export default {
         that.createUserForm = {
               username: "",
               password: "",
-              role: "普通用户"
+              role: "普通用户",
+              mobile: "",
+              mail: "",
+              wx: "",
           }
 
         Promise.all([
@@ -132,7 +159,7 @@ export default {
     },
     createUser () {
         var that = this
-        axios.post(that.config.getAddress("CREATE_USER"), {username: that.createUserForm.username, password: that.createUserForm.password, role: that.createUserForm.role})
+        axios.post(that.config.getAddress("CREATE_USER"), {username: that.createUserForm.username, password: that.createUserForm.password, role: that.createUserForm.role, mobile: that.createUserForm.mobile, mail: that.createUserForm.mail, wx: that.createUserForm.wx})
              .then(response => {
                  that.initData()
              })

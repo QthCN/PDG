@@ -48,8 +48,8 @@ func (m *AuthMgr) ListUsers() ([]*structs.UserInfo, error) {
 	return m.dao.ListUsers()
 }
 
-func (m *AuthMgr) CreateUser(username string, password string, role string) error {
-	return m.dao.CreateUser(username, password, role)
+func (m *AuthMgr) CreateUser(username string, password string, role string, mobile string, mail string, wx string) error {
+	return m.dao.CreateUser(username, password, role, mobile, mail, wx)
 }
 
 func (m *AuthMgr) RemoveUser(username string) error {

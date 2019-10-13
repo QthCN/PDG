@@ -1,16 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%;">
       <el-row v-loading="loading">
-          <el-col :span="12">
-            <el-row style="margin-right: 5px;">
-                <el-tabs type="border-card">
-                    <el-tab-pane label="基本信息">
-                    </el-tab-pane>
-                </el-tabs>
-            </el-row>
-          </el-col>
-
-          <el-col :span="12">
+          <el-col :span="24">
               <el-row>
                 <el-tabs type="border-card">
                     <el-tab-pane label="监控数据">
@@ -48,6 +39,12 @@ export default {
       return {
           config: new Config(),
           loading: true,
+          // 设备信息
+          device: {
+            uuid: "",
+            name: "",
+            device_type: "",
+          },
           // 监控项信息
           monitorItems: [],
           // 基本监控数据类型: CPU/MEMORY
@@ -81,7 +78,8 @@ export default {
         }
 
         Promise.all([
-            that.syncMonitorItems()
+          that.getDevice(),
+          that.syncMonitorItems()
         ]).then(values => {
             Promise.all([
                 that.syncCPUMonitorRecords(),
@@ -104,6 +102,21 @@ export default {
             })
             console.error(errors)
         })
+    },
+    getDevice () {
+        var that = this
+        return axios.post(that.config.getAddress("GET_DEVICE"), {uuid: that.uuid})
+                    .then(response => {
+                        that.device = response.data
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
+                    })
     },
     syncMonitorItems () {
         var that = this

@@ -68,7 +68,7 @@ func (d *AuthDAO) ListUsers() ([]*structs.UserInfo, error) {
 
 	users := []*structs.UserInfo{}
 
-	sql := `SELECT username, role FROM USER`
+	sql := `SELECT username, role, mobile, mail, wx FROM USER`
 	
 	stmt, err := tx.Prepare(sql)
 	if err != nil {
@@ -86,7 +86,7 @@ func (d *AuthDAO) ListUsers() ([]*structs.UserInfo, error) {
 
 	for rows.Next() {
 		user := &structs.UserInfo{}
-		if err = rows.Scan(&user.Username, &user.Role); err != nil {
+		if err = rows.Scan(&user.Username, &user.Role, &user.Mobile, &user.Mail, &user.WX); err != nil {
 			log.Errorln(err.Error())
 			return nil, err
 		}
@@ -96,11 +96,11 @@ func (d *AuthDAO) ListUsers() ([]*structs.UserInfo, error) {
 	return users, nil
 }
 
-func (d *AuthDAO) CreateUser(username string, password string, role string) error {
+func (d *AuthDAO) CreateUser(username string, password string, role string, mobile string, mail string, wx string) error {
 	w := md5.New()
 	io.WriteString(w, password)
 
-	err := mysql.DB.SimpleExec("INSERT INTO USER(username, epassword, role) VALUES(?, ?, ?)", username, fmt.Sprintf("%x", w.Sum(nil)), role)
+	err := mysql.DB.SimpleExec("INSERT INTO USER(username, epassword, role, mobile, mail, wx) VALUES(?, ?, ?, ?, ?, ?)", username, fmt.Sprintf("%x", w.Sum(nil)), role, mobile, mail, wx)
 	if err != nil {
 		log.Errorln(err.Error())
 		return err
