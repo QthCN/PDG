@@ -36,7 +36,6 @@
         </el-table-column>
     </el-table>
 
-
     <el-dialog title="新建用户" :visible.sync="createUserDialogVisible">
         <el-form :model="createUserForm">
             <el-form-item label="用户名" :label-width="formLabelWidth">
