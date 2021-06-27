@@ -9,6 +9,9 @@ func (s *Server) registAPI() {
 	// 初始化静态文件路径
 	initStaticFileMapping(s)
 
+	// 初始化api接口
+	initApiMapping(s)
+
 	// 初始化ajax接口
 	initAjaxMapping(s)
 }
@@ -20,9 +23,17 @@ func initStaticFileMapping(r *Server) {
 	r.GetRouter().PathPrefix("/img/").Handler(fs)
 	r.GetRouter().Path("/favicon.ico").Handler(fs)
 	r.GetRouter().Path("/login.html").Handler(fs)
+	r.GetRouter().Path("/jquery-3.4.1.min.js").Handler(fs)
+	r.GetRouter().Path("/vue.js").Handler(fs)
+	r.GetRouter().Path("/element-ui.js").Handler(fs)
+	r.GetRouter().Path("/theme-chalk.css").Handler(fs)
 
 	r.GetRouter().Path("/").Handler(fs)
 	r.GetRouter().NotFoundHandler = fs
+}
+
+func initApiMapping(r *Server) {
+	r.RegistURLMapping("/v1/api/alert/record", "POST", apiRecordAlert)
 }
 
 func initAjaxMapping(r *Server) {
@@ -116,4 +127,10 @@ func initAjaxMapping(r *Server) {
 
 	// 监控数据获取
 	r.RegistURLMapping("/v1/ajax/monitor/history/query", "GET", ajaxGetDeviceMonitorItemHistoryData)
+
+	// 告警
+	r.RegistURLMapping("/v1/ajax/alert/list", "GET", ajaxListAlertItems)
+	r.RegistURLMapping("/v1/ajax/alert/create", "POST", ajaxCreateAlertItem)
+	r.RegistURLMapping("/v1/ajax/alert/delete", "POST", ajaxDeleteAlertItem)
+	r.RegistURLMapping("/v1/ajax/alert/event/list", "GET", ajaxListAlertEvent)
 }

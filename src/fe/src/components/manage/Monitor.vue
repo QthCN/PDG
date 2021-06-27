@@ -17,18 +17,43 @@
                             label="数据收集模块">
                         </el-table-column>
                         <el-table-column
+                            fixed="right"
+                            label="操作"
+                            width="400">
+                            <template slot-scope="scope">
+                                <el-button @click="configDC(scope.row)" type="primary" plain size="small">配置数据收集模块</el-button>
+                                <el-button @click="bindDevice(scope.row)" type="primary" plain size="small">关联设备</el-button>
+                                <el-button @click="removeMonitorItem(scope.row)" type="danger" plain size="small">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-tab-pane>
+
+                <el-tab-pane label="告警事件管理">
+                    <el-button type="primary" plain size="small" style="float: right; margin-bottom: 5px;" @click="createAlertItemDialogShow = true">新建告警项</el-button>
+                    <el-table
+                        :data="alerts"
+                        border
+                        highlight-current-row
+                        style="width: 100%">
+                        <el-table-column
+                            prop="item_name"
+                            label="名称">
+                        </el-table-column>
+                        <el-table-column
                             prop="alert_type"
-                            label="告警模块">
+                            label="告警事件源">
+                        </el-table-column>
+                        <el-table-column
+                            prop="event_id"
+                            label="事件ID">
                         </el-table-column>
                         <el-table-column
                             fixed="right"
                             label="操作"
-                            width="500">
+                            width="400">
                             <template slot-scope="scope">
-                                <el-button @click="configDC(scope.row)" type="primary" plain size="small">配置数据收集模块</el-button>
-                                <el-button @click="configAlert(scope.row)" type="primary" plain size="small">配置告警模块</el-button>
-                                <el-button @click="bindDevice(scope.row)" type="primary" plain size="small">关联设备</el-button>
-                                <el-button @click="removeMonitorItem(scope.row)" type="danger" plain size="small">删除</el-button>
+                                <el-button @click="removeAlertItem(scope.row)" type="danger" plain size="small">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -57,6 +82,26 @@
                 </el-tab-pane>
         </el-tabs>
 
+    <el-dialog title="新建告警事件" :visible.sync="createAlertItemDialogShow">
+        <el-form :model="createAlertItemForm">
+            <el-form-item label="名称" :label-width="formLabelWidth">
+                <el-input v-model="createAlertItemForm.item_name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="事件源" :label-width="formLabelWidth">
+                <el-select v-model="createAlertItemForm.alert_type" placeholder="请选择">
+                    <el-option value="FAKE">FAKE</el-option>
+                    <el-option value="ZABBIX">ZABBIX</el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="事件ID" :label-width="formLabelWidth">
+                <el-input v-model="createAlertItemForm.event_id" autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="createAlertItemDialogShow = false">取 消</el-button>
+            <el-button type="primary" @click="createAlertItem">确 定</el-button>
+        </div>
+    </el-dialog>
 
     <el-dialog title="新建监控项" :visible.sync="createMonitorItemDialogShow">
         <el-form :model="createMonitorItemForm">
@@ -140,8 +185,10 @@ export default {
           config: new Config(),
           titles: ["所有设备", "已绑定设备"],
           devices: [],
+          alerts: [],
           monitorItems: [],
           createMonitorItemDialogShow: false,
+          createAlertItemDialogShow: false,
           formLabelWidth: '120px',
           createMonitorItemForm: {
               name: "",
@@ -157,8 +204,6 @@ export default {
                   item_name: "",
                   host_ip: "",
               },
-
-              alert_type: "",
           },
           bindDeviceDialogShow: false,
           bindDeviceMonitorItemId: 0,
@@ -170,6 +215,11 @@ export default {
               username: "",
               password: "",
           },
+          createAlertItemForm: {
+              item_name: "",
+              alert_type: "",
+              event_id: ""
+          }
       }
   },
   computed: {
@@ -200,8 +250,10 @@ export default {
         that.createMonitorItemDialogShow = false
         that.editDCDialogShow = false
         that.bindDeviceDialogShow = false
+        that.createAlertItemDialogShow = false
 
         Promise.all([
+            that.syncAlertItems(),
             that.syncMonitorItems(),
             that.syncMonitorBackendCfgs(),
             that.syncDevices()
@@ -233,6 +285,22 @@ export default {
                     .catch(error => {
                         console.error(error)
                         that.monitorBackendCfgs = []
+                        that.$message({
+                            type: 'error',
+                            message: error.response.data.msg,
+                            offset: 200,
+                        })
+                    })
+    },
+    syncAlertItems () {
+        var that = this
+        return axios.post(that.config.getAddress("LIST_ALERT_ITEMS"))
+                    .then(response => {
+                        that.alerts = response.data
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        that.alerts = []
                         that.$message({
                             type: 'error',
                             message: error.response.data.msg,
@@ -290,6 +358,21 @@ export default {
     createMonitorItem () {
         var that = this
         axios.post(that.config.getAddress("CREATE_MONITOR_ITEM"), that.createMonitorItemForm)
+             .then(response => {
+                 that.initData()
+             })
+             .catch(error => {
+                console.error(error)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
+             })
+    },
+    createAlertItem () {
+        var that = this
+        axios.post(that.config.getAddress("CREATE_ALERT_ITEM"), that.createAlertItemForm)
              .then(response => {
                  that.initData()
              })
@@ -462,8 +545,20 @@ export default {
                 })
              })
     },
-    configAlert(monitorItem) {
-
+    removeAlertItem (alertItem) {
+        var that = this
+        axios.post(that.config.getAddress("DELETE_ALERT_ITEM"), {id: alertItem.id})
+             .then(response => {
+                 that.initData()
+             })
+             .catch(error => {
+                console.error(error)
+                that.$message({
+                    type: 'error',
+                    message: error.response.data.msg,
+                    offset: 200,
+                })
+             })
     }
   }
 }

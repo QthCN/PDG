@@ -1600,9 +1600,8 @@ func ajaxCreateMonitorItem(res http.ResponseWriter, req *http.Request) {
 	}
 
 	type Request struct {
-		Name      string `json:"name"`
-		DCType    string `json:"dc_type"`
-		AlertType string `json:"alert_type"`
+		Name   string `json:"name"`
+		DCType string `json:"dc_type"`
 	}
 
 	request := &Request{}
@@ -1612,7 +1611,7 @@ func ajaxCreateMonitorItem(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = controller.Monitor.CreateMonitorItem(request.Name, request.DCType, request.AlertType)
+	err = controller.Monitor.CreateMonitorItem(request.Name, request.DCType)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err.Error(),
@@ -1647,10 +1646,9 @@ func ajaxUpdateMonitorItem(res http.ResponseWriter, req *http.Request) {
 	}
 
 	type Request struct {
-		Id        int64  `json:"id"`
-		Name      string `json:"name"`
-		DCType    string `json:"dc_type"`
-		AlertType string `json:"alert_type"`
+		Id     int64  `json:"id"`
+		Name   string `json:"name"`
+		DCType string `json:"dc_type"`
 	}
 
 	request := &Request{}
@@ -1660,7 +1658,7 @@ func ajaxUpdateMonitorItem(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = controller.Monitor.UpdateMonitorItem(request.Id, request.Name, request.DCType, request.AlertType)
+	err = controller.Monitor.UpdateMonitorItem(request.Id, request.Name, request.DCType)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err.Error(),
@@ -2179,4 +2177,155 @@ func ajaxUpdateMonitorBackendCfg(res http.ResponseWriter, req *http.Request) {
 
 	// audit
 	audit(token, "更新监控服务信息", "", fmt.Sprintf("监控服务 %s", request.BackendName))
+}
+
+func ajaxListAlertItems(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	records, err := controller.Monitor.ListAlertItems()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看告警事件列表", "", "")
+}
+
+func ajaxDeleteAlertItem(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		Id int64 `json:"id"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Monitor.DeleteAlertItem(request.Id)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "删除告警项", "", fmt.Sprintf("告警ID %d", request.Id))
+}
+
+func ajaxCreateAlertItem(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	if isAdmin(token) == false {
+		ResMsg(res, 400, "权限不足")
+		return
+	}
+
+	reqContent, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error("请求报文解析失败")
+		ResInvalidRequestBody(res)
+		return
+	}
+
+	type Request struct {
+		ItemName  string `json:"item_name"`
+		AlertType string `json:"alert_type"`
+		EventId   string `json:"event_id"`
+	}
+
+	request := &Request{}
+	if err := ParseJsonStr(string(reqContent), request); err != nil {
+		log.Errorln("解析模板JSON失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+
+	err = controller.Monitor.CreateAlertItem(request.ItemName, request.AlertType, request.EventId)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	ResSuccessMsg(res, 200, "操作成功")
+
+	// audit
+	audit(token, "创建告警项", "", fmt.Sprintf("告警名 %s", request.ItemName))
+}
+
+
+func ajaxListAlertEvent(res http.ResponseWriter, req *http.Request) {
+	token, err := util.CM.Get("token", req)
+	if err != nil || token == "" {
+		ResMsg(res, 400, "请求中未包含token")
+		return
+	}
+
+	records, err := controller.Monitor.ListAlertEvent()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("失败")
+		ResMsg(res, 400, err.Error())
+		return
+	}
+	b, err := json.Marshal(records)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err.Error(),
+		}).Error("JSON生成失败")
+		ResMsg(res, 500, err.Error())
+		return
+	}
+	ResMsg(res, 200, string(b))
+
+	// audit
+	audit(token, "查看告警事件", "", "")
 }

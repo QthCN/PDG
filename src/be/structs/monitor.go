@@ -50,12 +50,28 @@ type MonitorItem struct {
 	// 数据采集
 	DCType    string     `json:"dc_type"`
 	DCFakeCfg *DCFakeCfg `json:"dc_fake_cfg"`
-
-	// 告警
-	AlertType string `json:"alert_type"`
 }
 
 type DCFakeCfg struct {
 	ItemName string `json:"item_name"`
 	HostIp   string `json:"host_ip"`
+}
+
+type AlertItem struct {
+	Id        int64  `json:"id"`
+	ItemName  string `json:"item_name"`
+	AlertType string `json:"alert_type"`
+	EventId   string `json:"event_id"`
+}
+
+type AlertEvent struct {
+	Id         int64  `json:"id"`
+	AlertType  string `json:"alert_type"`
+	EventId    string `json:"event_id"`
+	AlertId    string `json:"alert_id"`
+	AlertMsg   string `json:"alert_msg"`
+	AlertHost  string `json:"alert_host"`
+	CreateTime string `json:"create_time"`
+	EndTime    string `json:"end_time"`
+	Status     string `json:"status"`
 }

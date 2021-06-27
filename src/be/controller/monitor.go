@@ -33,12 +33,12 @@ func (m *MonitorMgr) ListMonitorItems() ([]*structs.MonitorItem, error) {
 	return m.dao.ListMonitorItems()
 }
 
-func (m *MonitorMgr) CreateMonitorItem(name string, dcType string, alertType string) error {
-	return m.dao.CreateMonitorItem(name, dcType, alertType)
+func (m *MonitorMgr) CreateMonitorItem(name string, dcType string) error {
+	return m.dao.CreateMonitorItem(name, dcType)
 }
 
-func (m *MonitorMgr) UpdateMonitorItem(id int64, name string, dcType string, alertType string) error {
-	return m.dao.UpdateMonitorItem(id, name, dcType, alertType)
+func (m *MonitorMgr) UpdateMonitorItem(id int64, name string, dcType string) error {
+	return m.dao.UpdateMonitorItem(id, name, dcType)
 }
 
 func (m *MonitorMgr) DeleteMonitorItem(id int64) error {
@@ -154,4 +154,24 @@ func (m *MonitorMgr) GetDeviceMonitorItemHistoryData(filter *structs.HistoryData
 	}
 
 	return records, nil
+}
+
+func (m *MonitorMgr) ListAlertItems() ([]*structs.AlertItem, error) {
+	return m.dao.ListAlertItems()
+}
+
+func (m *MonitorMgr) DeleteAlertItem(id int64) error {
+	return m.dao.DeleteAlertItem(id)
+}
+
+func (m *MonitorMgr) CreateAlertItem(itemName string, alertType string, eventId string) error {
+	return m.dao.CreateAlertItem(itemName, alertType, eventId)
+}
+
+func (m *MonitorMgr) RecordAlert(alertType string, eventId string, alertId string, alertMsg string, alertHost string, isRecover bool) error {
+	return m.dao.RecordAlert(alertType, eventId, alertId, alertMsg, alertHost, isRecover)
+}
+
+func (m *MonitorMgr) ListAlertEvent() ([]*structs.AlertEvent, error) {
+	return m.dao.ListAlertEvent()
 }

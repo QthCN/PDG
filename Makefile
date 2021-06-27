@@ -17,6 +17,7 @@ all: be
 
 be:
 	go install be/cmd/pdg
+	GOOS=linux GOARCH=amd64 go build -v -o bin/pdg.linux be/cmd/pdg
 
 clean:
 	rm -rf bin

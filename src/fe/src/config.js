@@ -163,6 +163,18 @@ Config.prototype.getAddress = function(target) {
         case "UPDATE_BACKEND_CFG":
                 url = `${this.baseAddress}/v1/ajax/monitor/backend/update`
                 break 
+        case "LIST_ALERT_ITEMS":
+                url = `${this.baseAddress}/v1/ajax/alert/list`
+                break 
+        case "CREATE_ALERT_ITEM":
+                url = `${this.baseAddress}/v1/ajax/alert/create`
+                break 
+        case "DELETE_ALERT_ITEM":
+                url = `${this.baseAddress}/v1/ajax/alert/delete`
+                break
+        case "LIST_ALERT_EVENTS":
+                url = `${this.baseAddress}/v1/ajax/alert/event/list`
+                break
         default:
             console.error(`unknown target: ${target}`)
             break

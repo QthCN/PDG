@@ -9,8 +9,7 @@ import ResourceTopology from './components/device/ResourceTopology.vue'
 import NetworkTopology from './components/device/NetworkTopology.vue'
 import Audit from './components/manage/Audit.vue'
 import Monitor from './components/manage/Monitor.vue'
-
-
+import Dashboard from './components/monitor/Dashboard.vue'
 
 Vue.use(Router)
 
@@ -18,6 +17,16 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
+    {
+      path: '/',
+      name: 'Dashboard',
+      component: Dashboard
+    },
+    {
+      path: '/r/monitor/m',
+      name: 'Dashboard',
+      component: Dashboard
+    },
     {
       path: '/r/manage/u',
       name: 'User',

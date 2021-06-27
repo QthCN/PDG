@@ -92,7 +92,7 @@ export default {
     return {
       isCollapse: false,
       asideWidth: "200px",
-      indexSelected: "/r/device/p",
+      indexSelected: "/r/monitor/m",
     }
   },
   computed: {
@@ -102,7 +102,11 @@ export default {
     }
   },
   mounted () {
-    this.indexSelected = this.$store.state.routePath
+    if (this.$store.state.routePath === "/") {
+      this.indexSelected = "/r/monitor/m"
+    } else {
+      this.indexSelected = this.$store.state.routePath
+    }
   },
   methods: {
     changeIndex(key, keyPath) {

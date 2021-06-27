@@ -1,6 +1,10 @@
 <template>
   <div style="width: 100%; height: 100%">
       <div id="mountNode"></div>
+
+    <el-dialog :title="deviceName" :visible.sync="serverDeviceStatusDialogVisible" width="80%">
+        <DeviceStatus :uuid="deviceUUID" :device-type="deviceType"></DeviceStatus>
+    </el-dialog>
   </div>
 </template>
 
@@ -14,6 +18,8 @@ import logoNetworkRouter0 from '../../assets/logo-network-router-0.png'
 import logoNetworkRouter1 from '../../assets/logo-network-router-1.png'
 import logoServer0 from '../../assets/logo-server-0.png'
 
+import DeviceStatus from '../plugin/DeviceStatus.vue'
+
 
 
 export default {
@@ -22,6 +28,10 @@ export default {
       return {
           config: new Config(),
           connections: [],
+          deviceUUID: "",
+          deviceType: "",
+          deviceName: "",
+          serverDeviceStatusDialogVisible: false,
       }
   },
   computed: {
@@ -159,12 +169,13 @@ export default {
                       shape = 'image-red'
                   }
                   items.nodes.push({
+                      deviceInfo: item,
                       id: item.uuid,
                       shape: shape,
                       label: item.name,
                       img: image,
-                      x: idx * xOffset,
-                      y: itemIdx * yOffset,
+                      y: idx * xOffset,
+                      x: itemIdx * yOffset,
                   })
 
                   itemIdx += 1
@@ -206,6 +217,7 @@ export default {
     that.initData()
   },
   components: {
+      DeviceStatus
   },
   mounted () {
     
@@ -363,7 +375,12 @@ export default {
         graph.read(that.networkData);
 
         graph.on('node:click', e => {
+            console.log(e.item)
             var deviceInfo = e.item._cfg.model.deviceInfo
+            this.deviceUUID = deviceInfo.uuid
+            this.deviceType = deviceInfo.deviceType
+            this.deviceName = deviceInfo.name
+            this.serverDeviceStatusDialogVisible = true
         })
 
         graph.on('edge:click', e => {

@@ -15,7 +15,10 @@
                         <LinePic :title="'内存监控数据'" :records="memoryMonitorRecords" :key="memoryPicKey"></LinePic>
                       </el-row>
                     </el-tab-pane>
-                    <el-tab-pane label="实时告警">
+
+                    <el-tab-pane label="操作">
+                      <el-button type="primary" plain size="small" style="">打开带外控制台</el-button>
+                      <el-button type="primary" plain size="small" style="">重启</el-button>
                     </el-tab-pane>
                 </el-tabs>
             </el-row>
@@ -177,11 +180,6 @@ export default {
                   })
                   .catch(error => {
                       console.error(error)
-                      that.$message({
-                          type: 'error',
-                          message: error.response.data.msg,
-                          offset: 200,
-                      })
                   })
     },
     syncMemoryMonitorRecords () {
@@ -203,11 +201,6 @@ export default {
                   })
                   .catch(error => {
                       console.error(error)
-                      that.$message({
-                          type: 'error',
-                          message: error.response.data.msg,
-                          offset: 200,
-                      })
                   })
     },
   }
